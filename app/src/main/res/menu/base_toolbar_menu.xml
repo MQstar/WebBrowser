@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_window"
+        android:icon="@mipmap/ic_filter_1_black_36dp"
+        android:title="mult_window"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_new_web"
+        android:title="打开新的标签页"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_forward"
+        android:title="前进"
+        app:showAsAction="never" />
+</menu>
