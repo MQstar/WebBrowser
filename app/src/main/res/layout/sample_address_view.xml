@@ -1,0 +1,33 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<EditText
+    android:id="@+id/address"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:inputType="textUri"
+    android:layout_toLeftOf="@+id/button_refresh"
+    android:layout_centerVertical="true"
+    android:imeOptions="actionGo"
+    android:visibility="gone"
+    />
+    <TextView
+        android:id="@+id/show_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/searchOrInput"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:layout_toLeftOf="@+id/button_refresh"
+        android:layout_centerVertical="true"
+        />
+<TextView
+    android:layout_centerVertical="true"
+    android:background="@mipmap/ic_sync_black_24dp"
+    android:id="@id/button_refresh"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentRight="true"/>
+</RelativeLayout>
