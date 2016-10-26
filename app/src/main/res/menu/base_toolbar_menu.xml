@@ -2,17 +2,29 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/collect"
+        android:icon="@drawable/ic_star_border_black_36dp"
+        android:title="收藏"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/action_window"
         android:icon="@mipmap/ic_filter_1_black_36dp"
         android:title="mult_window"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"/>
+
     <item
         android:id="@+id/action_new_web"
         android:title="打开新的标签页"
-        app:showAsAction="never" />
+        app:showAsAction="never"/>
+
 
     <item
-        android:id="@+id/action_forward"
-        android:title="前进"
-        app:showAsAction="never" />
+        android:id="@+id/bookmarks"
+        android:title="书签"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/history"
+        android:title="历史记录"
+        app:showAsAction="never"/>
 </menu>

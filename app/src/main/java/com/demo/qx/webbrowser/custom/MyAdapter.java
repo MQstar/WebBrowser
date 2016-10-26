@@ -1,10 +1,12 @@
-package com.demo.qx.webbrowser;
+package com.demo.qx.webbrowser.custom;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
+
+import com.demo.qx.webbrowser.MyApp;
 
 /**
  * Created by qx on 16/10/24.

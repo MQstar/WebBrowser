@@ -1,4 +1,4 @@
-package com.demo.qx.webbrowser;
+package com.demo.qx.webbrowser.home;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.demo.qx.webbrowser.R;
 import com.demo.qx.webbrowser.custom.MyAppWebViewClient;
 import com.demo.qx.webbrowser.custom.MyWebChromeClient;
 import com.demo.qx.webbrowser.custom.MyWebView;
@@ -34,10 +35,10 @@ import static com.demo.qx.webbrowser.R.id.progressBar;
  * Created by qx on 16/10/24.
  */
 
-public class WebFragment extends Fragment implements MainContract.View, View.OnClickListener, TextView.OnEditorActionListener, Toolbar.OnMenuItemClickListener {
+public class WebFragment extends Fragment implements WebContract.View, View.OnClickListener, TextView.OnEditorActionListener, Toolbar.OnMenuItemClickListener {
     boolean isLoading;
     boolean isTyping;
-    MainContract.Presenter mPresenter;
+    WebContract.Presenter mPresenter;
     MyWebView mWebView;
     EditText mEditText;
     TextView mShowAddress;
@@ -68,7 +69,7 @@ public class WebFragment extends Fragment implements MainContract.View, View.OnC
         mEditText.setSelectAllOnFocus(true);
         mProgressBar = (ProgressBar) root.findViewById(progressBar);
         mWebView = (MyWebView) root.findViewById(R.id.web_view);
-        mWebView.setWebChromeClient(new MyWebChromeClient((MainActivity) getActivity(),mPresenter));
+        mWebView.setWebChromeClient(new MyWebChromeClient((WebActivity) getActivity(),mPresenter));
         mWebView.setWebViewClient(new MyAppWebViewClient());
 
       /*  mWebView.setOnTouchListener ( new View.OnTouchListener () {
@@ -107,7 +108,7 @@ public class WebFragment extends Fragment implements MainContract.View, View.OnC
     }
 
     @Override
-    public void setPresenter(@NonNull MainContract.Presenter presenter) {
+    public void setPresenter(@NonNull WebContract.Presenter presenter) {
         mPresenter = presenter;
     }
 
@@ -226,7 +227,7 @@ public class WebFragment extends Fragment implements MainContract.View, View.OnC
             if (mCurrentTitle!=null)
                 mShowAddress.setText(mCurrentTitle);
             mProgressBar.setVisibility(ProgressBar.GONE);
-            mRefresh.setBackgroundResource(R.drawable.ic_sync_black_36dp);
+            mRefresh.setBackgroundResource(R.drawable.ic_refresh_black_36dp);
         }
     }
 

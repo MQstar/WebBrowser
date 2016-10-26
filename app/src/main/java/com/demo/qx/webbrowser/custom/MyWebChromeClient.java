@@ -4,18 +4,18 @@ import android.os.Message;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
-import com.demo.qx.webbrowser.MainActivity;
-import com.demo.qx.webbrowser.MainContract;
+import com.demo.qx.webbrowser.home.WebActivity;
+import com.demo.qx.webbrowser.home.WebContract;
 
 /**
  * Created by qx on 16/10/24.
  */
 public class MyWebChromeClient extends WebChromeClient {
-    MainContract.Presenter mPresenter;
-    MainActivity mMainActivity;
+    WebContract.Presenter mPresenter;
+    WebActivity mWebActivity;
 
-    public MyWebChromeClient(MainActivity mainActivity, MainContract.Presenter presenter) {
-        mMainActivity = mainActivity;
+    public MyWebChromeClient(WebActivity webActivity, WebContract.Presenter presenter) {
+        mWebActivity = webActivity;
         mPresenter = presenter;
     }
 
@@ -24,7 +24,7 @@ public class MyWebChromeClient extends WebChromeClient {
                                   final boolean userGesture, final Message resultMsg) {
         if (userGesture) {
             WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
-            mMainActivity.setNewWindow(transport);
+            mWebActivity.setNewWindow(transport);
             resultMsg.sendToTarget();
             return true;
         }

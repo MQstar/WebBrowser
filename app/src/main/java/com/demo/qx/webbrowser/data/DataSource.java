@@ -5,4 +5,5 @@ package com.demo.qx.webbrowser.data;
  */
 
 public interface DataSource {
+    void addBookmarks(WebPage webPage);
 }

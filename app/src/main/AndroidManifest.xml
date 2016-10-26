@@ -19,7 +19,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".home.WebActivity"/>
+        <activity android:name=".bookmarks.BookmarksActivity">
+        </activity>
+        <activity android:name=".history.HistoryActivity">
+        </activity>
+        <activity android:name=".download.DownloadActivity">
+        </activity>
     </application>
 
 </manifest>

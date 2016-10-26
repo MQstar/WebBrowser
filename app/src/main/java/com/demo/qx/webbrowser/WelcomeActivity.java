@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.demo.qx.webbrowser.home.WebActivity;
+
 /**
  * Created by qx on 16/10/6.
  */
@@ -23,7 +25,7 @@ public class WelcomeActivity extends Activity{
             switch (msg.what) {
                 case GOTO_MAIN_ACTIVITY:
                     Intent intent = new Intent();
-                    intent.setClass(WelcomeActivity.this, MainActivity.class);
+                    intent.setClass(WelcomeActivity.this, WebActivity.class);
                     startActivity(intent);
                     finish();
                     break;

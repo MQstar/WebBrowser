@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ * Copyright 2016, The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,19 @@
 
 package com.demo.qx.webbrowser.utils;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 
-import com.demo.qx.webbrowser.data.Local.LocalDataSource;
-import com.demo.qx.webbrowser.data.Remote.RemoteDataSource;
-import com.demo.qx.webbrowser.data.Repository;
 
-public class Injection {
+public class ActivityUtils {
 
-    public static Repository provideTasksRepository(@NonNull Context context) {
-        return Repository.getInstance(RemoteDataSource.getInstance(), LocalDataSource.getInstance(context));
+    public static void addFragmentToActivity (@NonNull FragmentManager fragmentManager,
+                                              @NonNull Fragment fragment, int frameId) {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(frameId, fragment);
+        transaction.commit();
     }
+
 }

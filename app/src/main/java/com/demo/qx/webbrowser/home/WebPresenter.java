@@ -1,4 +1,4 @@
-package com.demo.qx.webbrowser;
+package com.demo.qx.webbrowser.home;
 
 import android.support.annotation.NonNull;
 
@@ -8,10 +8,10 @@ import com.demo.qx.webbrowser.data.Repository;
  * Created by qx on 16/10/25.
  */
 
-public class Presenter implements MainContract.Presenter{
+public class WebPresenter implements WebContract.Presenter {
     private final Repository mRepository;
-    private final MainContract.View mView;
-    public Presenter(@NonNull Repository repository, @NonNull WebFragment webFragment) {
+    private final WebContract.View mView;
+    public WebPresenter(@NonNull Repository repository, @NonNull WebFragment webFragment) {
         mRepository = repository;
         mView = webFragment;
         mView.setPresenter(this);
@@ -21,7 +21,6 @@ public class Presenter implements MainContract.Presenter{
     public void start() {
 
     }
-
 
     @Override
     public void setTitle(String title) {
@@ -37,4 +36,5 @@ public class Presenter implements MainContract.Presenter{
     public void changeProgress(int progress) {
         mView.changeProgress(progress);
     }
+
 }

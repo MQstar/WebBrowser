@@ -3,6 +3,7 @@ package com.demo.qx.webbrowser;
 import android.app.Application;
 
 import com.demo.qx.webbrowser.custom.MainFrag;
+import com.demo.qx.webbrowser.home.WebFragment;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,11 +1,9 @@
-package com.demo.qx.webbrowser;
+package com.demo.qx.webbrowser.home;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -15,16 +13,20 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.EditText;
 
-import com.demo.qx.webbrowser.Utils.Injection;
+import com.demo.qx.webbrowser.MyApp;
+import com.demo.qx.webbrowser.R;
 import com.demo.qx.webbrowser.custom.MyWebView;
+import com.demo.qx.webbrowser.utils.Injection;
 
-public class MainActivity extends AppCompatActivity {
+import static com.demo.qx.webbrowser.utils.ActivityUtils.addFragmentToActivity;
+
+public class WebActivity extends AppCompatActivity {
     MyWebView mWebView;
     boolean isTyping;
     DisplayMetrics mDisplayMetrics;
     WebFragment mWebFragment;
     int index=1;
-    private Presenter mPresenter;
+    private WebPresenter mPresenter;
     final String HOME = "file:///android_asset/www/index1.html";
 
     @Override
@@ -39,16 +41,16 @@ public class MainActivity extends AppCompatActivity {
             mWebFragment = WebFragment.newInstance(0,"https://www.baidu.com");
             addFragmentToActivity(getSupportFragmentManager(),mWebFragment, R.id.web_fragment);
         }
-        mPresenter = new Presenter(Injection.provideTasksRepository(getApplicationContext()), mWebFragment);
+        mPresenter = new WebPresenter(Injection.provideTasksRepository(getApplicationContext()), mWebFragment);
         mWebView=mWebFragment.mWebView;
         Log.e("############", String.valueOf(mWebView==null));
     }
 
-    private void addFragmentToActivity(@NonNull FragmentManager supportFragmentManager,@NonNull WebFragment webFragment, int web_fragment) {
+ /*   private void addFragmentToActivity(@NonNull FragmentManager supportFragmentManager,@NonNull WebFragment webFragment, int web_fragment) {
         FragmentTransaction transaction = supportFragmentManager.beginTransaction();
         transaction.add(web_fragment, webFragment);
         transaction.commit();
-    }
+    }*/
 
     @Override
     public void onBackPressed() {

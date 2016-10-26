@@ -1,4 +1,4 @@
-package com.demo.qx.webbrowser;
+package com.demo.qx.webbrowser.custom;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -14,7 +14,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.demo.qx.webbrowser.custom.MainFrag;
+import com.demo.qx.webbrowser.MyApp;
+import com.demo.qx.webbrowser.R;
 
 import java.util.Iterator;
 
