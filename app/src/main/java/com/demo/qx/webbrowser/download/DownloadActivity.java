@@ -7,8 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.demo.qx.webbrowser.R;
-import com.demo.qx.webbrowser.history.HistoryFragment;
-import com.demo.qx.webbrowser.history.HistoryPresenter;
 import com.demo.qx.webbrowser.utils.ActivityUtils;
 import com.demo.qx.webbrowser.utils.Injection;
 
@@ -22,7 +20,7 @@ public class DownloadActivity extends AppCompatActivity {
             setSupportActionBar(toolbar);
             ActionBar ab = getSupportActionBar();
             ab.setTitle("下载");
-            ab.setHomeAsUpIndicator(R.drawable.ic_chevron_left_black_36dp);
+            ab.setHomeAsUpIndicator(R.drawable.ic_chevron_left_black_24dp);
             ab.setDisplayHomeAsUpEnabled(true);
 
 

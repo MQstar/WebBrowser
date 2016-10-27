@@ -20,7 +20,7 @@ public class HistoryActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setTitle("历史");
-        ab.setHomeAsUpIndicator(R.drawable.ic_chevron_left_black_36dp);
+        ab.setHomeAsUpIndicator(R.drawable.ic_chevron_left_black_24dp);
         ab.setDisplayHomeAsUpEnabled(true);
 
 

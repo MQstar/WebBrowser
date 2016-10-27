@@ -214,7 +214,7 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
         if (progress < 100 && mProgressBar.getVisibility() == ProgressBar.GONE) {
             isLoading = true;
             mProgressBar.setVisibility(ProgressBar.VISIBLE);
-            mRefresh.setBackgroundResource(R.drawable.ic_clear_black_36dp);
+            mRefresh.setBackgroundResource(R.drawable.ic_close_black_24dp);
             mProgressBar.setProgress(progress);
         }
         if (progress == 100) {
@@ -222,7 +222,7 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
             if (mCurrentTitle!=null)
                 mShowAddress.setText(mCurrentTitle);
             mProgressBar.setVisibility(ProgressBar.GONE);
-            mRefresh.setBackgroundResource(R.drawable.ic_refresh_black_36dp);
+            mRefresh.setBackgroundResource(R.drawable.ic_refresh_black_24dp);
         }
     }
 

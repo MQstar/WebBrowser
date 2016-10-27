@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.demo.qx.webbrowser.R;
 import com.demo.qx.webbrowser.utils.ActivityUtils;
@@ -21,7 +22,7 @@ public class BookmarksActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setTitle("书签");
-        ab.setHomeAsUpIndicator(R.drawable.ic_chevron_left_black_36dp);
+        ab.setHomeAsUpIndicator(R.drawable.ic_chevron_left_black_24dp);
         ab.setDisplayHomeAsUpEnabled(true);
 
 
@@ -36,6 +37,15 @@ public class BookmarksActivity extends AppCompatActivity {
 
         new BookmarksPresenter(
                 Injection.provideTasksRepository(getApplicationContext()), bookmarksFragment);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
     void openURL(String url){
         Intent intent=getIntent();
