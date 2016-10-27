@@ -97,6 +97,13 @@ public class Repository implements DataSource {
         }
         mCachedHistory.clear();
     }
+
+    @Override
+    public void removeBookmarks(String address) {
+        mLocalDataSource.removeBookmarks(address);
+        mCachedBookmarks.remove(address);
+    }
+
     private void refreshCache(List<WebPage> webPages) {
         if (mCachedBookmarks == null) {
             mCachedBookmarks = new LinkedHashMap<>();

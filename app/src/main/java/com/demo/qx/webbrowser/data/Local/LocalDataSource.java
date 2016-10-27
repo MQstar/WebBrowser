@@ -79,6 +79,18 @@ public class LocalDataSource implements DataSource {
         db.close();
     }
 
+    @Override
+    public void removeBookmarks(String address) {
+        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+
+        String selection = PersistenceContract.Bookmarks.COLUMN_NAME_ADDRESS + " LIKE ?";
+        String[] selectionArgs = { address };
+
+        db.delete(PersistenceContract.Bookmarks.TABLE_NAME, selection, selectionArgs);
+
+        db.close();
+    }
+
 
     @Override
     public void addBookmarks(@NonNull WebPage webPage) {

@@ -15,6 +15,8 @@ public interface DataSource {
 
     void deleteAllHistory();
 
+    void removeBookmarks(String address);
+
 
     interface LoadCallback {
 

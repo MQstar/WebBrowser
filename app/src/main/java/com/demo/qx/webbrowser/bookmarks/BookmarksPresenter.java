@@ -64,6 +64,12 @@ public class BookmarksPresenter implements BookmarksContract.Presenter {
         });
     }
 
+    @Override
+    public void removeBookmarks(String address) {
+        mRepository.removeBookmarks(address);
+        loadBookmarks(false);
+    }
+
     private void processBookmarks(List<WebPage> webPages) {
         if (webPages.isEmpty()) {
             processEmptyTasks();

@@ -15,7 +15,6 @@ public interface BookmarksContract {
         void showBookmarks(List<WebPage> webPageList);
 
         void showNoBookmarks();
-
     }
 
     interface Presenter extends BasePresenter {
@@ -25,5 +24,7 @@ public interface BookmarksContract {
 
 
         void loadBookmarks(boolean forceUpdate);
+
+        void removeBookmarks(String address);
     }
 }

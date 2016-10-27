@@ -34,6 +34,11 @@ public class RemoteDataSource implements DataSource {
     }
 
     @Override
+    public void removeBookmarks(String address) {
+
+    }
+
+    @Override
     public void addBookmarks(@NonNull WebPage webPage) {
 
     }

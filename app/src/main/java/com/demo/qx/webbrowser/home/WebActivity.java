@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
@@ -23,7 +22,7 @@ import com.demo.qx.webbrowser.utils.Injection;
 import static com.demo.qx.webbrowser.utils.ActivityUtils.addFragmentToActivity;
 
 public class WebActivity extends AppCompatActivity {
-    DisplayMetrics mDisplayMetrics;
+    //DisplayMetrics mDisplayMetrics;
     WebFragment mWebFragment;
     private WebPresenter mPresenter;
     final String HOME = "file:///android_asset/www/index1.html";
@@ -36,10 +35,10 @@ public class WebActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mDisplayMetrics=getResources().getDisplayMetrics();
         mActivity = WebActivity.this;
         intent=getIntent();
-        processExtraData();
+        //mDisplayMetrics=getResources().getDisplayMetrics();
+        if (savedInstanceState==null) processExtraData();
     }
 
     private void processExtraData() {
@@ -83,23 +82,22 @@ public class WebActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (resultCode) {
             case RESULT_OK:
-                getNewWebFragment(false,data.getStringExtra("URL"));
+                getNewWebFragment(data.getStringExtra("URL"));
                 break;
             default:
                 break;
         }
     }
 
-    private void getNewWebFragment(boolean add, @Nullable String url) {
+    private void getNewWebFragment(@Nullable String url) {
+        FragmentTransaction transaction =getSupportFragmentManager().beginTransaction();
+        transaction.hide(mWebFragment);
         if (url==null)
         mWebFragment= WebFragment.newInstance("https://www.baidu.com");
         else
             mWebFragment= WebFragment.newInstance(url);
         MyApp.sWebFragmentList.add(mWebFragment);
-        FragmentTransaction transaction =getSupportFragmentManager().beginTransaction();
-        if (add)
-            transaction.add(R.id.web_fragment, mWebFragment);
-        else transaction.replace(R.id.web_fragment, mWebFragment);
+        transaction.add(R.id.web_fragment, mWebFragment);
         transaction.commitAllowingStateLoss();
         mPresenter = new WebPresenter(Injection.provideTasksRepository(getApplicationContext()), mWebFragment);
     }
@@ -159,7 +157,7 @@ public class WebActivity extends AppCompatActivity {
     }*/
 
     public void setNewWindow(WebView.WebViewTransport webViewTransport) {
-        getNewWebFragment(false,null);
+        getNewWebFragment(null);
         mWebFragment.setTransport(webViewTransport);
     }
 

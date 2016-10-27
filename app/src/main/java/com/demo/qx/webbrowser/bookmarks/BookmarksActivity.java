@@ -17,16 +17,12 @@ public class BookmarksActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookmarks);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setTitle("书签");
         ab.setHomeAsUpIndicator(R.drawable.ic_chevron_left_black_24dp);
         ab.setDisplayHomeAsUpEnabled(true);
-
-
-
         BookmarksFragment bookmarksFragment = (BookmarksFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.contentFrame);
         if (bookmarksFragment == null) {
@@ -38,6 +34,7 @@ public class BookmarksActivity extends AppCompatActivity {
         new BookmarksPresenter(
                 Injection.provideTasksRepository(getApplicationContext()), bookmarksFragment);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -47,10 +44,11 @@ public class BookmarksActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    void openURL(String url){
-        Intent intent=getIntent();
-        intent.putExtra("URL",url);
-        setResult(RESULT_OK,intent);
+
+    void openURL(String url) {
+        Intent intent = getIntent();
+        intent.putExtra("URL", url);
+        setResult(RESULT_OK, intent);
         finish();
     }
 }

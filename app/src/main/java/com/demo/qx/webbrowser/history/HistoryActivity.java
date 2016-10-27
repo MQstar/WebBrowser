@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.demo.qx.webbrowser.R;
 import com.demo.qx.webbrowser.utils.ActivityUtils;
@@ -22,9 +23,6 @@ public class HistoryActivity extends AppCompatActivity {
         ab.setTitle("历史");
         ab.setHomeAsUpIndicator(R.drawable.ic_chevron_left_black_24dp);
         ab.setDisplayHomeAsUpEnabled(true);
-
-
-
         HistoryFragment historyFragment = (HistoryFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.contentFrame);
         if (historyFragment == null) {
@@ -36,10 +34,22 @@ public class HistoryActivity extends AppCompatActivity {
         new HistoryPresenter(
                 Injection.provideTasksRepository(getApplicationContext()), historyFragment);
     }
-    void openURL(String url){
-        Intent intent=getIntent();
-        intent.putExtra("URL",url);
-        setResult(RESULT_OK,intent);
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    void openURL(String url) {
+        Intent intent = getIntent();
+        intent.putExtra("URL", url);
+        setResult(RESULT_OK, intent);
         finish();
     }
 }
+
