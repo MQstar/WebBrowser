@@ -15,6 +15,7 @@ public interface BookmarksContract {
         void showBookmarks(List<WebPage> webPageList);
 
         void showNoBookmarks();
+
     }
 
     interface Presenter extends BasePresenter {
@@ -22,6 +23,7 @@ public interface BookmarksContract {
 
         void showBookmarks(List<WebPage> webPageList);
 
-        List<WebPage> getBookmarks();
+
+        void loadBookmarks(boolean forceUpdate);
     }
 }

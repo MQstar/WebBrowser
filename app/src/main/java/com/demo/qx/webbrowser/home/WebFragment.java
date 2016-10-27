@@ -23,11 +23,13 @@ import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.demo.qx.webbrowser.R;
 import com.demo.qx.webbrowser.custom.MyAppWebViewClient;
 import com.demo.qx.webbrowser.custom.MyWebChromeClient;
 import com.demo.qx.webbrowser.custom.MyWebView;
+import com.demo.qx.webbrowser.data.WebPage;
 
 import static com.demo.qx.webbrowser.R.id.progressBar;
 
@@ -71,24 +73,6 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
         mWebView = (MyWebView) root.findViewById(R.id.web_view);
         mWebView.setWebChromeClient(new MyWebChromeClient((WebActivity) getActivity(),mPresenter));
         mWebView.setWebViewClient(new MyAppWebViewClient());
-
-      /*  mWebView.setOnTouchListener ( new View.OnTouchListener () {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // TODO Auto-generated method stub
-                switch (event.getAction ()) {
-                    case MotionEvent.ACTION_DOWN :
-                    case MotionEvent.ACTION_UP :
-                        if (!v.hasFocus ()) {
-                            v.requestFocus ();
-                        }
-                        break ;
-                }
-                return false ;
-            }
-        });*/
-
         if (mTransport!=null)
         {
             mTransport.setWebView(mWebView);
@@ -98,13 +82,10 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
         return root;
     }
 
-    public static WebFragment newInstance(int index,String url) {
+    public static WebFragment newInstance(String url) {
         URL=url;
-        WebFragment f = new WebFragment();
-        Bundle args = new Bundle();
-        args.putInt("index", index);
-        f.setArguments(args);
-        return f;
+        WebFragment webFragment = new WebFragment();
+        return webFragment;
     }
 
     @Override
@@ -193,6 +174,20 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
             if (mWebView.canGoForward())
                 mWebView.goForward();
                 break;
+            case  R.id.collect:
+                mPresenter.addBookmarks(new WebPage(mWebView.getUrl(),mWebView.getTitle()));
+                Toast.makeText(getActivity(), "已收藏", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.bookmarks:
+                ((WebActivity)getActivity()).openBookmarks();
+                break;
+            case R.id.history:
+                ((WebActivity)getActivity()).openHistory();
+                break;
+            case R.id.download:
+                ((WebActivity)getActivity()).openDownload();
+                break;
+
             default:
                 break;
         }

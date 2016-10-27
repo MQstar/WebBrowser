@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.demo.qx.webbrowser.R;
 import com.demo.qx.webbrowser.data.WebPage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,8 +38,7 @@ public class BookmarksFragment extends Fragment implements BookmarksContract.Vie
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mWebPages=mPresenter.getBookmarks();
-        mListAdapter = new BookmarksAdapter(mWebPages, mItemListener);
+        mListAdapter = new BookmarksAdapter(new ArrayList<WebPage>(0), mItemListener);
     }
 
     @Nullable
@@ -46,13 +46,10 @@ public class BookmarksFragment extends Fragment implements BookmarksContract.Vie
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_bookmarks, container, false);
 
-        // Set up tasks view
         mListView = (ListView) root.findViewById(R.id.bookmarks_list);
         mListView.setAdapter(mListAdapter);
-        mTextView= (TextView) root.findViewById(R.id.noBookmarks);
-
-        setHasOptionsMenu(true);
-
+        mTextView= (TextView) root.findViewById(R.id.no_bookmarks);
+       // setHasOptionsMenu(true);
         return root;
     }
 
@@ -96,6 +93,7 @@ public class BookmarksFragment extends Fragment implements BookmarksContract.Vie
         mListView.setVisibility(View.GONE);
         mTextView.setVisibility(View.VISIBLE);
     }
+
 
     private static class BookmarksAdapter extends BaseAdapter {
 
@@ -166,7 +164,7 @@ public class BookmarksFragment extends Fragment implements BookmarksContract.Vie
     ItemListener mItemListener = new ItemListener() {
         @Override
         public void onClick(WebPage clickedWebPage) {
-            //mPresenter.openWebPage(clickedWebPage);
+            ((BookmarksActivity)getActivity()).openURL(clickedWebPage.getUrl());
         }
     };
 

@@ -1,55 +1,66 @@
 package com.demo.qx.webbrowser.home;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Picture;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.demo.qx.webbrowser.MyApp;
 import com.demo.qx.webbrowser.R;
-import com.demo.qx.webbrowser.custom.MyWebView;
+import com.demo.qx.webbrowser.bookmarks.BookmarksActivity;
+import com.demo.qx.webbrowser.download.DownloadActivity;
+import com.demo.qx.webbrowser.history.HistoryActivity;
 import com.demo.qx.webbrowser.utils.Injection;
 
 import static com.demo.qx.webbrowser.utils.ActivityUtils.addFragmentToActivity;
 
 public class WebActivity extends AppCompatActivity {
-    MyWebView mWebView;
-    boolean isTyping;
     DisplayMetrics mDisplayMetrics;
     WebFragment mWebFragment;
-    int index=1;
     private WebPresenter mPresenter;
     final String HOME = "file:///android_asset/www/index1.html";
+    Intent intent;
+    private long exitTime = 0;
+    private WebActivity mActivity;
+    Handler mHandler=new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mDisplayMetrics=getResources().getDisplayMetrics();
+        mActivity = WebActivity.this;
+        intent=getIntent();
+        processExtraData();
+    }
 
+    private void processExtraData() {
         mWebFragment=
                 (WebFragment) getSupportFragmentManager().findFragmentById(R.id.web_fragment);
         if (mWebFragment == null) {
-            mWebFragment = WebFragment.newInstance(0,"https://www.baidu.com");
+            if (intent==null||intent.getStringExtra("URL")==null)
+                mWebFragment = WebFragment.newInstance("https://www.baidu.com");
+            else
+                mWebFragment = WebFragment.newInstance(intent.getStringExtra("URL"));
             addFragmentToActivity(getSupportFragmentManager(),mWebFragment, R.id.web_fragment);
         }
         mPresenter = new WebPresenter(Injection.provideTasksRepository(getApplicationContext()), mWebFragment);
-        mWebView=mWebFragment.mWebView;
-        Log.e("############", String.valueOf(mWebView==null));
     }
 
- /*   private void addFragmentToActivity(@NonNull FragmentManager supportFragmentManager,@NonNull WebFragment webFragment, int web_fragment) {
-        FragmentTransaction transaction = supportFragmentManager.beginTransaction();
-        transaction.add(web_fragment, webFragment);
-        transaction.commit();
+    /*@Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        this.intent=getIntent();
+        processExtraData();
     }*/
 
     @Override
@@ -59,28 +70,38 @@ public class WebActivity extends AppCompatActivity {
        // } else if (mWebView.canGoBack()) {
        //     mWebView.goBack();
        // } else {
-            super.onBackPressed();
-      //  }
+        if((System.currentTimeMillis()-exitTime) > 2000){
+            Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+            exitTime = System.currentTimeMillis();
+        } else {
+            finish();
+            System.exit(0);
+        }
     }
 
-    void initView() {
-
-
-        //mWebView.loadUrl("https://www.baidu.com");
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode) {
+            case RESULT_OK:
+                getNewWebFragment(false,data.getStringExtra("URL"));
+                break;
+            default:
+                break;
+        }
     }
 
-    private void getNewWebFrag(boolean add) {
-        mWebFragment= WebFragment.newInstance(index,"https://www.baidu.com");
-        index++;
+    private void getNewWebFragment(boolean add, @Nullable String url) {
+        if (url==null)
+        mWebFragment= WebFragment.newInstance("https://www.baidu.com");
+        else
+            mWebFragment= WebFragment.newInstance(url);
         MyApp.sWebFragmentList.add(mWebFragment);
         FragmentTransaction transaction =getSupportFragmentManager().beginTransaction();
         if (add)
             transaction.add(R.id.web_fragment, mWebFragment);
         else transaction.replace(R.id.web_fragment, mWebFragment);
-        transaction.commit();
-//        mWebView.setWebChromeClient(new MyWebChromeClient(this,mPresenter));
-//        mWebView.setWebViewClient(new MyAppWebViewClient());
+        transaction.commitAllowingStateLoss();
+        mPresenter = new WebPresenter(Injection.provideTasksRepository(getApplicationContext()), mWebFragment);
     }
 
 
@@ -120,7 +141,7 @@ public class WebActivity extends AppCompatActivity {
         return false;
     }
     //截图
-    private Bitmap captureWebView(WebView webView){
+   /* private Bitmap captureWebView(WebView webView){
         Picture snapShot = webView.capturePicture();
 
         Bitmap bmp = null;
@@ -135,10 +156,23 @@ public class WebActivity extends AppCompatActivity {
 
         }
         return bmp;
-    }
+    }*/
 
     public void setNewWindow(WebView.WebViewTransport webViewTransport) {
-        getNewWebFrag(false);
+        getNewWebFragment(false,null);
         mWebFragment.setTransport(webViewTransport);
     }
+
+    public void openBookmarks() {
+        startActivityForResult(new Intent(mActivity, BookmarksActivity.class), 1);
+    }
+
+    public void openHistory() {
+        startActivityForResult(new Intent(mActivity, HistoryActivity.class),2);
+    }
+
+    public void openDownload() {
+        startActivityForResult(new Intent(mActivity, DownloadActivity.class),3);
+    }
+
 }

@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".home.WebActivity"/>
+        <activity android:name=".home.WebActivity" android:launchMode="singleTask"/>
         <activity android:name=".bookmarks.BookmarksActivity">
         </activity>
         <activity android:name=".history.HistoryActivity">

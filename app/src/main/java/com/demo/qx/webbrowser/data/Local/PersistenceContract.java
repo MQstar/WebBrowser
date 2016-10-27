@@ -26,12 +26,12 @@ public final class PersistenceContract {
     public static abstract class Bookmarks implements BaseColumns {
         public static final String TABLE_NAME = "bookmarks";
         public static final String COLUMN_NAME_TITLE = "title";
-        public static final String COLUMN_NAME_ADDRESS = "description";
+        public static final String COLUMN_NAME_ADDRESS = "address";
     }
     public static abstract class History implements BaseColumns {
         public static final String TABLE_NAME = "history";
         public static final String COLUMN_NAME_TITLE = "title";
-        public static final String COLUMN_NAME_ADDRESS = "description";
-        public static final String COLUMN_NAME_TIME = "time";
+        public static final String COLUMN_NAME_ADDRESS = "address";
+        public static final String COLUMN_NAME_DATE = "date";
     }
 }

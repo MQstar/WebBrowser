@@ -18,7 +18,7 @@
 
         <include
             layout="@layout/sample_address_view"
-            android:layout_width="255dp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"/>
     </android.support.v7.widget.Toolbar>
 
