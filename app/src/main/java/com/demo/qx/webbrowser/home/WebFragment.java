@@ -1,6 +1,5 @@
 package com.demo.qx.webbrowser.home;
 
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
@@ -8,11 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,13 +30,14 @@ import com.demo.qx.webbrowser.custom.MyWebChromeClient;
 import com.demo.qx.webbrowser.custom.MyWebView;
 import com.demo.qx.webbrowser.data.WebPage;
 
+import static com.demo.qx.webbrowser.R.id.action_new_web;
 import static com.demo.qx.webbrowser.R.id.progressBar;
 
 /**
  * Created by qx on 16/10/24.
  */
 
-public class WebFragment extends Fragment implements WebContract.View, View.OnClickListener, TextView.OnEditorActionListener, Toolbar.OnMenuItemClickListener {
+public class WebFragment extends Fragment implements WebContract.View, View.OnClickListener, TextView.OnEditorActionListener{
     boolean isLoading;
     boolean isTyping;
     WebContract.Presenter mPresenter;
@@ -45,8 +45,10 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
     EditText mEditText;
     TextView mShowAddress;
     TextView mRefresh;
+    TextView mMultWindow;
     ProgressBar mProgressBar;
     View root;
+    android.support.v7.app.ActionBar mActionBar;
     PropertyValuesHolder pvhX;
     PropertyValuesHolder pvhY;
     ObjectAnimator scale;
@@ -58,15 +60,15 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_web, container, false);
-        Toolbar toolbar = (Toolbar) root.findViewById(R.id.toolbar);
-        toolbar.inflateMenu(R.menu.base_toolbar_menu);//设置右上角的填充菜单
-        toolbar.setOnMenuItemClickListener(this);
-        ((AppCompatActivity)getActivity()).getSupportActionBar();
-        mRefresh = (TextView) root.findViewById(R.id.button_refresh);
+
+
+
+        mActionBar=((WebActivity)getActivity()).ab;
+        mRefresh=((WebActivity)getActivity()).mRefresh;
+        mEditText=((WebActivity)getActivity()).mEditText;
+        mShowAddress= ((WebActivity)getActivity()).mShowAddress;
         mRefresh.setOnClickListener(this);
-        mShowAddress = (TextView) root.findViewById(R.id.show_address);
         mShowAddress.setOnClickListener(this);
-        mEditText = (EditText) root.findViewById(R.id.address);
         mEditText.setOnEditorActionListener(this);
         mEditText.setSelectAllOnFocus(true);
         mProgressBar = (ProgressBar) root.findViewById(progressBar);
@@ -79,6 +81,7 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
             mTransport=null;
         }else
             mWebView.loadUrl(URL);
+        setHasOptionsMenu(true);
         return root;
     }
 
@@ -93,6 +96,10 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
         mPresenter = presenter;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.base_toolbar_menu, menu);
+    }
 
 
     //// FIXME: 16/10/25 back
@@ -126,8 +133,7 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
                 break;
             case R.id.show_address:
                 isTyping = true;
-                mShowAddress.setVisibility(View.GONE);
-                mRefresh.setVisibility(View.GONE);
+                mActionBar.hide();
                 mEditText.setText(mWebView.getUrl());
                 mEditText.setVisibility(View.VISIBLE);
                 mEditText.requestFocus();
@@ -139,10 +145,19 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
         }
     }
 
+    /*@Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        ((TextView)menu.findItem(action_new_web).getActionView()).setText(MyApp.sWebFragmentList.size()+"");
+        super.onPrepareOptionsMenu(menu);
+    }*/
     @Override
-    public boolean onMenuItemClick(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.action_window:
+            case android.R.id.home:
+                if (mWebView.canGoBack())
+                mWebView.goBack();
+                return true;
+            /*
                 pvhX = PropertyValuesHolder.ofFloat("scaleX", 1f, 0.6f);
                 pvhY = PropertyValuesHolder.ofFloat("scaleY", 1f, 0.6f);
                 scale = ObjectAnimator.ofPropertyValuesHolder(mWebView, pvhX, pvhY);
@@ -167,12 +182,13 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
                     }
                 });
                 scale.start();
-                break;
-            case R.id.action_new_web:
+                break;*/
+            case action_new_web:
+                ((WebActivity)getActivity()).getNewWebFragment(null);
                 break;
             case R.id.action_forward:
-            if (mWebView.canGoForward())
-                mWebView.goForward();
+                if (mWebView.canGoForward())
+                    mWebView.goForward();
                 break;
             case  R.id.collect:
                 mPresenter.addBookmarks(new WebPage(mWebView.getUrl(),mWebView.getTitle()));
@@ -193,6 +209,7 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
         }
         return true;
     }
+
     public void setTitle(String title) {
         mCurrentTitle=title;
     }
@@ -203,8 +220,7 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
 
     public void hideEdit() {
         isTyping = false;
-        mShowAddress.setVisibility(View.VISIBLE);
-        mRefresh.setVisibility(View.VISIBLE);
+        mActionBar.show();
         mEditText.setVisibility(View.GONE);
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);

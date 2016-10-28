@@ -1,14 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.demo.qx.webbrowser.home.WebActivity"
-        android:orientation="vertical"
     android:background="#000000">
+    <EditText
+        android:id="@+id/address"
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:inputType="textUri"
+        android:imeOptions="actionGo"
+        android:visibility="gone"
+        android:background="#ffffff"
+        android:gravity="center_vertical"
+        />
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        style="@style/AppTheme">
+    <include
+        layout="@layout/toolbar_address_view"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"/>
+</android.support.v7.widget.Toolbar>
     <FrameLayout
             android:id="@+id/web_fragment"
             android:layout_width="match_parent"

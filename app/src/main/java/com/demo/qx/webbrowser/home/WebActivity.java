@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.demo.qx.webbrowser.MyApp;
@@ -26,6 +29,11 @@ public class WebActivity extends AppCompatActivity {
     private WebPresenter mPresenter;
     final String HOME = "file:///android_asset/www/index1.html";
     Intent intent;
+    EditText mEditText;
+    TextView mShowAddress;
+    TextView mRefresh;
+    TextView mMultWindow;
+    ActionBar ab;
     private long exitTime = 0;
     private WebActivity mActivity;
 
@@ -33,24 +41,24 @@ public class WebActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ab = getSupportActionBar();
+        ab.setHomeAsUpIndicator(R.drawable.ic_chevron_left_black_24dp);
+        ab.setDisplayHomeAsUpEnabled(true);
+
+
+        mShowAddress = (TextView) findViewById(R.id.show_address);
+        mEditText = (EditText) findViewById(R.id.address);
+        mRefresh = (TextView) findViewById(R.id.button_refresh);
+        mMultWindow = (TextView) findViewById(R.id.mult_window_number);
+        setSupportActionBar(toolbar);
         mActivity = WebActivity.this;
         intent = getIntent();
         //mDisplayMetrics=getResources().getDisplayMetrics();
         if (savedInstanceState == null) processExtraData();
     }
 
-    private void processExtraData() {
-        mWebFragment =
-                (WebFragment) getSupportFragmentManager().findFragmentById(R.id.web_fragment);
-        if (mWebFragment == null) {
-            if (intent == null || intent.getStringExtra("URL") == null)
-                mWebFragment = WebFragment.newInstance("https://www.baidu.com");
-            else
-                mWebFragment = WebFragment.newInstance(intent.getStringExtra("URL"));
-            addFragmentToActivity(getSupportFragmentManager(), mWebFragment, R.id.web_fragment);
-        }
-        mPresenter = new WebPresenter(Injection.provideTasksRepository(getApplicationContext()), mWebFragment);
-    }
 
     /*@Override
     protected void onNewIntent(Intent intent) {
@@ -87,7 +95,7 @@ public class WebActivity extends AppCompatActivity {
         }
     }
 
-    private void getNewWebFragment(@Nullable String url) {
+    public void getNewWebFragment(@Nullable String url) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.hide(mWebFragment);
         if (url == null)
@@ -98,6 +106,22 @@ public class WebActivity extends AppCompatActivity {
         transaction.add(R.id.web_fragment, mWebFragment);
         transaction.commitAllowingStateLoss();
         mPresenter = new WebPresenter(Injection.provideTasksRepository(getApplicationContext()), mWebFragment);
+        mMultWindow.setText(MyApp.sWebFragmentList.size()+"");
+    }
+
+    private void processExtraData() {
+        mWebFragment =
+                (WebFragment) getSupportFragmentManager().findFragmentById(R.id.web_fragment);
+        if (mWebFragment == null) {
+            if (intent == null || intent.getStringExtra("URL") == null)
+                mWebFragment = WebFragment.newInstance("https://www.baidu.com");
+            else
+                mWebFragment = WebFragment.newInstance(intent.getStringExtra("URL"));
+            MyApp.sWebFragmentList.add(mWebFragment);
+            addFragmentToActivity(getSupportFragmentManager(), mWebFragment, R.id.web_fragment);
+        }
+        mPresenter = new WebPresenter(Injection.provideTasksRepository(getApplicationContext()), mWebFragment);
+        mMultWindow.setText(MyApp.sWebFragmentList.size()+"");
     }
 
     public boolean dispatchTouchEvent(MotionEvent ev) {

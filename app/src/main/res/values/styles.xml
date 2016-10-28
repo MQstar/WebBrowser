@@ -5,6 +5,7 @@
         <item name="colorPrimary">@android:color/background_light</item>
         <item name="colorAccent">@android:color/holo_blue_light</item>
         <item name="android:statusBarColor">@android:color/background_light</item>
+        <item name="toolbarStyle">@style/Toolbar</item>
     </style>
 
 
@@ -15,7 +16,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="Toolbar" parent="AppTheme"/>
+    <style name="Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="contentInsetStart">0dp</item><!-- 设置该属性解决空白部分-->
+    </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 

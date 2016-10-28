@@ -2,11 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_window"
-        android:icon="@drawable/ic_crop_din_black_24dp"
-        android:title="mult_window"
-        app:showAsAction="ifRoom"/>
-    <item
         android:id="@+id/collect"
         android:icon="@drawable/ic_star_border_black_24dp"
         android:title="收藏"
