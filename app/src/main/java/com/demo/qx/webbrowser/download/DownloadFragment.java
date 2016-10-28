@@ -135,7 +135,7 @@ public class DownloadFragment extends Fragment implements DownloadContract.View{
             View rowView = view;
             if (rowView == null) {
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-                rowView = inflater.inflate(R.layout.bookmarks_item, viewGroup, false);
+                rowView = inflater.inflate(R.layout.item_webpage, viewGroup, false);
             }
 
             final WebPage webPage = getItem(i);

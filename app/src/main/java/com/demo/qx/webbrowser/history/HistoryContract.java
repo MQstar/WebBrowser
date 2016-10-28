@@ -19,11 +19,10 @@ public interface HistoryContract {
     }
 
     interface Presenter extends BasePresenter {
+        void removeAll();
 
-        void addHistory(WebPage webPage);
+        void loadHistory(boolean forceUpdate);
 
-        void showHistory(List<WebPage> webPageList);
-
-        List<WebPage> getHistory();
+        void removeHistory(WebPage webPage);
     }
 }

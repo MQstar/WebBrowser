@@ -26,5 +26,7 @@ public interface WebContract {
         void changeProgress(int progress);
 
         void addBookmarks(WebPage webPage);
+
+        void addHistory(WebPage webPage);
     }
 }

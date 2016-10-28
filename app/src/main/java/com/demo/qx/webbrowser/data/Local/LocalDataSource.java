@@ -65,10 +65,7 @@ public class LocalDataSource implements DataSource {
 
     }
 
-    @Override
-    public void refreshBookmarks() {
 
-    }
 
     @Override
     public void deleteAllHistory() {
@@ -89,6 +86,57 @@ public class LocalDataSource implements DataSource {
         db.delete(PersistenceContract.Bookmarks.TABLE_NAME, selection, selectionArgs);
 
         db.close();
+    }
+
+    @Override
+    public void removeHistory(@NonNull WebPage webPage) {
+        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+
+        String selection = PersistenceContract.History.COLUMN_NAME_ADDRESS + " LIKE ?"+" AND "+
+                PersistenceContract.History.COLUMN_NAME_DATE + " LIKE ?";
+        String[] selectionArgs = { webPage.getUrl(),webPage.getDate() };
+
+        db.delete(PersistenceContract.History.TABLE_NAME, selection, selectionArgs);
+
+        db.close();
+    }
+
+
+    @Override
+    public void getHistory(@NonNull LoadCallback callback) {
+        List<WebPage> webPages = new ArrayList<>();
+        SQLiteDatabase db = mDBHelper.getReadableDatabase();
+
+        String[] projection = {
+                PersistenceContract.History.COLUMN_NAME_ADDRESS,
+                PersistenceContract.History.COLUMN_NAME_TITLE,
+                PersistenceContract.History.COLUMN_NAME_DATE
+        };
+
+        Cursor c = db.query(
+                PersistenceContract.History.TABLE_NAME, projection, null, null, null, null, null);
+
+        if (c != null && c.getCount() > 0) {
+            while (c.moveToNext()) {
+                String address = c.getString(c.getColumnIndexOrThrow(PersistenceContract.History.COLUMN_NAME_ADDRESS));
+                String title = c.getString(c.getColumnIndexOrThrow(PersistenceContract.History.COLUMN_NAME_TITLE));
+                String date = c.getString(c.getColumnIndexOrThrow(PersistenceContract.History.COLUMN_NAME_DATE));
+                WebPage webPage = new WebPage(address, title,date);
+                webPages.add(webPage);
+            }
+        }
+        if (c != null) {
+            c.close();
+        }
+
+        db.close();
+
+        if (webPages.isEmpty()) {
+            // This will be called if the table is new or just empty.
+            callback.onDataNotAvailable();
+        } else {
+            callback.onLoaded(webPages);
+        }
     }
 
 
@@ -119,6 +167,22 @@ public class LocalDataSource implements DataSource {
 
     @Override
     public void addHistory(WebPage webPage) {
+        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(PersistenceContract.History.COLUMN_NAME_ADDRESS, webPage.getUrl());
+        values.put(PersistenceContract.History.COLUMN_NAME_TITLE, webPage.getTitle());
+        values.put(PersistenceContract.History.COLUMN_NAME_DATE, webPage.getDate());
+        db.insert(PersistenceContract.History.TABLE_NAME, null, values);
+
+        db.close();
+    }
+    @Override
+    public void refreshBookmarks() {
+
+    }
+    @Override
+    public void refreshHistory() {
 
     }
 }

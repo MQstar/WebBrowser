@@ -47,7 +47,7 @@ public class Repository implements DataSource {
             mLocalDataSource.getBookmarks(new LoadCallback() {
                 @Override
                 public void onLoaded(List<WebPage> webPages) {
-                    refreshCache(webPages);
+                    refreshBookmarksCache(webPages);
                     callback.onLoaded(new ArrayList<>(mCachedBookmarks.values()));
                 }
 
@@ -69,7 +69,6 @@ public class Repository implements DataSource {
     public void addBookmarks(WebPage webPage) {
         mLocalDataSource.addBookmarks(webPage);
 
-        // Do in memory cache update to keep the app UI up to date
         if (mCachedBookmarks == null) {
             mCachedBookmarks = new LinkedHashMap<>();
         }
@@ -85,7 +84,12 @@ public class Repository implements DataSource {
 
     @Override
     public void addHistory(WebPage webPage) {
+        mLocalDataSource.addHistory(webPage);
 
+        if (mCachedHistory == null) {
+            mCachedHistory = new LinkedHashMap<>();
+        }
+        mCachedHistory.put(webPage.hashCode()+"", webPage);
     }
 
     @Override
@@ -104,7 +108,39 @@ public class Repository implements DataSource {
         mCachedBookmarks.remove(address);
     }
 
-    private void refreshCache(List<WebPage> webPages) {
+    @Override
+    public void removeHistory(WebPage webPage) {
+        mLocalDataSource.removeHistory(webPage);
+        mCachedHistory.remove(webPage.hashCode()+"");
+    }
+
+    @Override
+    public void refreshHistory() {
+        mHistoryCacheIsDirty=true;
+    }
+
+    @Override
+    public void getHistory(@NonNull final LoadCallback callback) {
+        if (mCachedHistory != null && !mHistoryCacheIsDirty) {
+            callback.onLoaded(new ArrayList<>(mCachedHistory.values()));
+            return;
+        }
+
+        mLocalDataSource.getHistory(new LoadCallback() {
+            @Override
+            public void onLoaded(List<WebPage> webPages) {
+                refreshHistoryCache(webPages);
+                callback.onLoaded(new ArrayList<>(mCachedHistory.values()));
+            }
+            @Override
+            public void onDataNotAvailable() {
+                callback.onDataNotAvailable();
+            }
+
+        });
+    }
+
+    private void refreshBookmarksCache(List<WebPage> webPages) {
         if (mCachedBookmarks == null) {
             mCachedBookmarks = new LinkedHashMap<>();
         }
@@ -113,6 +149,16 @@ public class Repository implements DataSource {
             mCachedBookmarks.put(webPage.getUrl(), webPage);
         }
         mBookmarksCacheIsDirty = false;
+    }
+    private void refreshHistoryCache(List<WebPage> webPages) {
+        if (mCachedHistory == null) {
+            mCachedHistory = new LinkedHashMap<>();
+        }
+        mCachedHistory.clear();
+        for (WebPage webPage : webPages) {
+            mCachedHistory.put(webPage.hashCode()+"", webPage);
+        }
+        mHistoryCacheIsDirty = false;
     }
 
 }

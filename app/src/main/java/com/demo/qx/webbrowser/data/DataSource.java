@@ -17,6 +17,12 @@ public interface DataSource {
 
     void removeBookmarks(String address);
 
+    void removeHistory(@NonNull WebPage webPage);
+
+    void refreshHistory();
+
+    void getHistory(@NonNull LoadCallback loadCallback);
+
 
     interface LoadCallback {
 

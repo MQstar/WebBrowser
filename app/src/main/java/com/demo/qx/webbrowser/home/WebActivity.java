@@ -2,7 +2,6 @@ package com.demo.qx.webbrowser.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -29,27 +28,26 @@ public class WebActivity extends AppCompatActivity {
     Intent intent;
     private long exitTime = 0;
     private WebActivity mActivity;
-    Handler mHandler=new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mActivity = WebActivity.this;
-        intent=getIntent();
+        intent = getIntent();
         //mDisplayMetrics=getResources().getDisplayMetrics();
-        if (savedInstanceState==null) processExtraData();
+        if (savedInstanceState == null) processExtraData();
     }
 
     private void processExtraData() {
-        mWebFragment=
+        mWebFragment =
                 (WebFragment) getSupportFragmentManager().findFragmentById(R.id.web_fragment);
         if (mWebFragment == null) {
-            if (intent==null||intent.getStringExtra("URL")==null)
+            if (intent == null || intent.getStringExtra("URL") == null)
                 mWebFragment = WebFragment.newInstance("https://www.baidu.com");
             else
                 mWebFragment = WebFragment.newInstance(intent.getStringExtra("URL"));
-            addFragmentToActivity(getSupportFragmentManager(),mWebFragment, R.id.web_fragment);
+            addFragmentToActivity(getSupportFragmentManager(), mWebFragment, R.id.web_fragment);
         }
         mPresenter = new WebPresenter(Injection.provideTasksRepository(getApplicationContext()), mWebFragment);
     }
@@ -64,12 +62,12 @@ public class WebActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-       // if (isTyping) {
-            //mWebFragment.hideEdit();
-       // } else if (mWebView.canGoBack()) {
-       //     mWebView.goBack();
-       // } else {
-        if((System.currentTimeMillis()-exitTime) > 2000){
+        // if (isTyping) {
+        //mWebFragment.hideEdit();
+        // } else if (mWebView.canGoBack()) {
+        //     mWebView.goBack();
+        // } else {
+        if ((System.currentTimeMillis() - exitTime) > 2000) {
             Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
             exitTime = System.currentTimeMillis();
         } else {
@@ -90,19 +88,17 @@ public class WebActivity extends AppCompatActivity {
     }
 
     private void getNewWebFragment(@Nullable String url) {
-        FragmentTransaction transaction =getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.hide(mWebFragment);
-        if (url==null)
-        mWebFragment= WebFragment.newInstance("https://www.baidu.com");
+        if (url == null)
+            mWebFragment = WebFragment.newInstance("https://www.baidu.com");
         else
-            mWebFragment= WebFragment.newInstance(url);
+            mWebFragment = WebFragment.newInstance(url);
         MyApp.sWebFragmentList.add(mWebFragment);
         transaction.add(R.id.web_fragment, mWebFragment);
         transaction.commitAllowingStateLoss();
         mPresenter = new WebPresenter(Injection.provideTasksRepository(getApplicationContext()), mWebFragment);
     }
-
-
 
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
@@ -166,11 +162,11 @@ public class WebActivity extends AppCompatActivity {
     }
 
     public void openHistory() {
-        startActivityForResult(new Intent(mActivity, HistoryActivity.class),2);
+        startActivityForResult(new Intent(mActivity, HistoryActivity.class), 2);
     }
 
     public void openDownload() {
-        startActivityForResult(new Intent(mActivity, DownloadActivity.class),3);
+        startActivityForResult(new Intent(mActivity, DownloadActivity.class), 3);
     }
 
 }

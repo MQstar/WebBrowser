@@ -30,11 +30,6 @@ public class BookmarksPresenter implements BookmarksContract.Presenter {
     }
 
     @Override
-    public void showBookmarks(List<WebPage> webPageList) {
-        mView.showBookmarks(webPageList);
-    }
-
-    @Override
     public void start() {
         loadBookmarks(false || mFirstLoad);
     }
@@ -46,9 +41,6 @@ public class BookmarksPresenter implements BookmarksContract.Presenter {
         if (forceUpdate) {
             mRepository.refreshBookmarks();
         }
-
-        // The network request might be handled in a different thread so make sure Espresso knows
-        // that the app is busy until the response is handled.
 
         mRepository.getBookmarks(new DataSource.LoadCallback() {
             @Override
@@ -72,12 +64,9 @@ public class BookmarksPresenter implements BookmarksContract.Presenter {
 
     private void processBookmarks(List<WebPage> webPages) {
         if (webPages.isEmpty()) {
-            processEmptyTasks();
+            mView.showNoBookmarks();
         } else {
             mView.showBookmarks(webPages);
         }
-    }
-    private void processEmptyTasks() {
-        mView.showNoBookmarks();
     }
 }

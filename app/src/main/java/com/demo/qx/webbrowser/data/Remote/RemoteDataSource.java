@@ -39,6 +39,21 @@ public class RemoteDataSource implements DataSource {
     }
 
     @Override
+    public void removeHistory(@NonNull WebPage webPage) {
+
+    }
+
+    @Override
+    public void refreshHistory() {
+
+    }
+
+    @Override
+    public void getHistory(@NonNull LoadCallback loadCallback) {
+
+    }
+
+    @Override
     public void addBookmarks(@NonNull WebPage webPage) {
 
     }

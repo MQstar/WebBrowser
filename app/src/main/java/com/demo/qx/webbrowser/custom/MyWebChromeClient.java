@@ -4,8 +4,12 @@ import android.os.Message;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+import com.demo.qx.webbrowser.data.WebPage;
 import com.demo.qx.webbrowser.home.WebActivity;
 import com.demo.qx.webbrowser.home.WebContract;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by qx on 16/10/24.
@@ -39,6 +43,10 @@ public class MyWebChromeClient extends WebChromeClient {
     public void onProgressChanged(WebView view, int progress) {
         mPresenter.setAddress(view.getUrl());
         mPresenter.changeProgress(progress);
+        SimpleDateFormat formatter = new SimpleDateFormat ("yyyy年MM月dd日");
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+        String date = formatter.format(curDate);
+        mPresenter.addHistory(new WebPage(view.getUrl(),view.getTitle(),date));
 
     }
 }

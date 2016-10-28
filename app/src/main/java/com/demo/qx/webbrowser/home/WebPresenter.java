@@ -43,4 +43,9 @@ public class WebPresenter implements WebContract.Presenter {
         mRepository.addBookmarks(webPage);
     }
 
+    @Override
+    public void addHistory(WebPage webPage) {
+        mRepository.addHistory(webPage);
+    }
+
 }
