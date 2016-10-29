@@ -67,7 +67,7 @@ public class MultiWindow extends AppCompatActivity implements MultiFragment.Remo
     }
     void noFragmentRemain(){
         Intent intent = getIntent();
-        setResult(RESULT_CANCELED, intent);
+        setResult(911119, intent);
         finish();
         overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
     }
@@ -83,6 +83,13 @@ public class MultiWindow extends AppCompatActivity implements MultiFragment.Remo
         Intent intent = getIntent();
         intent.putExtra("ID", index);
         setResult(RESULT_OK, intent);
+        finish();
+        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
         finish();
         overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
     }

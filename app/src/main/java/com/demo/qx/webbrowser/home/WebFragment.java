@@ -50,7 +50,7 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
     EditText mEditText;
     TextView mShowAddress;
     TextView mRefresh;
-    TextView mMultWindow;
+    TextView mMultiWindow;
     ProgressBar mProgressBar;
     View root;
     android.support.v7.app.ActionBar mActionBar;
@@ -63,16 +63,22 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
     public Bitmap mBitmap;
     private long mAId;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mAId=Long.valueOf(getTimeId());
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_web, container, false);
-        mMultWindow=((WebActivity)getActivity()).mMultiWindow;
+        mMultiWindow=((WebActivity)getActivity()).mMultiWindow;
         mActionBar=((WebActivity)getActivity()).ab;
         mRefresh=((WebActivity)getActivity()).mRefresh;
         mEditText=((WebActivity)getActivity()).mEditText;
         mShowAddress= ((WebActivity)getActivity()).mShowAddress;
-        mMultWindow.setOnClickListener(this);
+        mMultiWindow.setOnClickListener(this);
         mRefresh.setOnClickListener(this);
         mShowAddress.setOnClickListener(this);
         mEditText.setOnEditorActionListener(this);
@@ -88,11 +94,10 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
         }else
             mWebView.loadUrl(URL);
         setHasOptionsMenu(true);
-        String strNum = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()) ;
-        strNum = strNum.substring(2, strNum.length()) ;
-        mAId=Long.valueOf(strNum);
         return root;
     }
+
+
 
     public static WebFragment newInstance(String url) {
         URL=url;
@@ -180,6 +185,7 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
                 mWebView.goBack();
                 return true;
             case R.id.action_new_web:
+                mBitmap=captureWebView(mWebView);
                 ((WebActivity)getActivity()).getNewWebFragment(null);
                 break;
             case R.id.action_forward:
@@ -311,6 +317,13 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
             }
         });
         scale.start();
+    }
+
+    @NonNull
+    private String getTimeId() {
+        String strNum = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()) ;
+        strNum = strNum.substring(2, strNum.length()) ;
+        return strNum;
     }
 
     public long getAId() {

@@ -92,7 +92,7 @@ public class WebActivity extends AppCompatActivity {
                 case RESULT_OK:
                     showFragment(data.getIntExtra("ID",0));
                     break;
-                case RESULT_CANCELED:
+                case 911119:
                     getNewWebFragment(null);
                     break;
                 default:
