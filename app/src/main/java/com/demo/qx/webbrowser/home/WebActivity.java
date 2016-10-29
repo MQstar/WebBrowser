@@ -200,5 +200,6 @@ public class WebActivity extends AppCompatActivity {
 
     public void changeWindow(){
         startActivityForResult(new Intent(mActivity, MultiWindow.class), 4);
+        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
     }
 }

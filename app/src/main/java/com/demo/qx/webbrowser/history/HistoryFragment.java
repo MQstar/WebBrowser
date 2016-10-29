@@ -83,6 +83,7 @@ public class HistoryFragment extends Fragment implements HistoryContract.View {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
         inflater.inflate(R.menu.history_fragment_menu, menu);
     }
 
