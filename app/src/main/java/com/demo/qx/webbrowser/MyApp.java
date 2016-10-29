@@ -13,6 +13,6 @@ import java.util.List;
  */
 
 public class MyApp extends Application {
-    public static List<MultiFragment> sFragList =new ArrayList<>();
+    public static List<MultiFragment> sMultiFragments =new ArrayList<>();
     public static List<WebFragment> sWebFragmentList =new ArrayList<>();
 }

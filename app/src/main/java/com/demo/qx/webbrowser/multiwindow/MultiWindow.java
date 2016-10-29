@@ -34,12 +34,12 @@ public class MultiWindow extends AppCompatActivity implements MultiFragment.Remo
         mImageView= (ImageView) findViewById(R.id.add_page);
         mImageView.setOnClickListener(this);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        MyApp.sFragList.clear();
+        MyApp.sMultiFragments.clear();
         for (int i = 0; i < MyApp.sWebFragmentList.size(); i++) {
             MultiFragment tmp = MultiFragment.getInstance(MyApp.sWebFragmentList.get(i).getAId(),MyApp.sWebFragmentList.get(i).mCurrentTitle,MyApp.sWebFragmentList.get(i).mBitmap,this,this);
-            MyApp.sFragList.add(tmp);
+            MyApp.sMultiFragments.add(tmp);
         }
-        mMyAdapter = new MyAdapter(this, getSupportFragmentManager());
+        mMyAdapter = new MyAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mMyAdapter);
         mViewPager.setPageMargin(40);
         mViewPager.setOffscreenPageLimit(3);
@@ -47,8 +47,8 @@ public class MultiWindow extends AppCompatActivity implements MultiFragment.Remo
 
     @Override
     public void remove(long hCode) {
-        if (MyApp.sFragList.size()==0)return;
-        Iterator<MultiFragment> iterator = MyApp.sFragList.iterator();
+        if (MyApp.sMultiFragments.size()==0)return;
+        Iterator<MultiFragment> iterator = MyApp.sMultiFragments.iterator();
         while(iterator.hasNext()){
             MultiFragment temp = iterator.next();
             if (temp.getHCode() == hCode)
@@ -63,7 +63,7 @@ public class MultiWindow extends AppCompatActivity implements MultiFragment.Remo
             {iterator2.remove();
                 break;}
         }
-        if (MyApp.sFragList.size()==0)noFragmentRemain();
+        if (MyApp.sMultiFragments.size()==0)noFragmentRemain();
     }
     void noFragmentRemain(){
         Intent intent = getIntent();

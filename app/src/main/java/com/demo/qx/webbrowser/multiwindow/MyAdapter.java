@@ -1,6 +1,5 @@
 package com.demo.qx.webbrowser.multiwindow;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -13,22 +12,20 @@ import com.demo.qx.webbrowser.MyApp;
  */
 class MyAdapter extends FragmentStatePagerAdapter {
 
-    private Context context;
     private FragmentManager fm;
-    public MyAdapter(Context context,FragmentManager fm) {
+    public MyAdapter(FragmentManager fm) {
         super(fm);
-        this.context = context;
         this.fm=fm;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return MyApp.sFragList.get(position);
+        return MyApp.sMultiFragments.get(position);
     }
 
     @Override
     public int getCount() {
-        return MyApp.sFragList.size();
+        return MyApp.sMultiFragments.size();
     }
 
 
