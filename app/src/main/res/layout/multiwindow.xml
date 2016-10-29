@@ -9,13 +9,13 @@
     >
 <LinearLayout
     android:id="@+id/page"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
     android:layout_centerInParent="true"
     android:clickable="true"
     android:clipChildren="false"
-    app:layout_widthPercent="80%"
-    app:layout_heightPercent="80%"
+    app:layout_widthPercent="60%"
+    app:layout_heightPercent="60%"
     >
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"

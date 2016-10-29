@@ -1,8 +1,12 @@
 package com.demo.qx.webbrowser.home;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Picture;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,8 +34,9 @@ import com.demo.qx.webbrowser.custom.MyWebChromeClient;
 import com.demo.qx.webbrowser.custom.MyWebView;
 import com.demo.qx.webbrowser.data.WebPage;
 
-import static com.demo.qx.webbrowser.R.id.action_new_web;
-import static com.demo.qx.webbrowser.R.id.progressBar;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 /**
  * Created by qx on 16/10/24.
@@ -52,26 +57,27 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
     PropertyValuesHolder pvhX;
     PropertyValuesHolder pvhY;
     ObjectAnimator scale;
-    String mCurrentTitle;
+    public String mCurrentTitle;
     static String URL;
     private WebView.WebViewTransport mTransport;
+    public Bitmap mBitmap;
+    private long mAId;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_web, container, false);
-
-
-
+        mMultWindow=((WebActivity)getActivity()).mMultiWindow;
         mActionBar=((WebActivity)getActivity()).ab;
         mRefresh=((WebActivity)getActivity()).mRefresh;
         mEditText=((WebActivity)getActivity()).mEditText;
         mShowAddress= ((WebActivity)getActivity()).mShowAddress;
+        mMultWindow.setOnClickListener(this);
         mRefresh.setOnClickListener(this);
         mShowAddress.setOnClickListener(this);
         mEditText.setOnEditorActionListener(this);
         mEditText.setSelectAllOnFocus(true);
-        mProgressBar = (ProgressBar) root.findViewById(progressBar);
+        mProgressBar = (ProgressBar) root.findViewById(R.id.progressBar);
         mWebView = (MyWebView) root.findViewById(R.id.web_view);
         mWebView.setWebChromeClient(new MyWebChromeClient((WebActivity) getActivity(),mPresenter));
         mWebView.setWebViewClient(new MyAppWebViewClient());
@@ -82,6 +88,9 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
         }else
             mWebView.loadUrl(URL);
         setHasOptionsMenu(true);
+        String strNum = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()) ;
+        strNum = strNum.substring(2, strNum.length()) ;
+        mAId=Long.valueOf(strNum);
         return root;
     }
 
@@ -92,17 +101,29 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mWebView.destroyDrawingCache();
+    }
+
+    @Override
     public void setPresenter(@NonNull WebContract.Presenter presenter) {
         mPresenter = presenter;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
         inflater.inflate(R.menu.base_toolbar_menu, menu);
     }
 
+    /*@Override
+    public void onHiddenChanged(boolean hidden) {
+        if (!hidden)
+            zoomIn();
+    }*/
 
-    //// FIXME: 16/10/25 back
+//// FIXME: 16/10/25 back
    /* public void onBackPressed() {
         if (isTyping) {
             hideEdit();
@@ -140,16 +161,17 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(mEditText, 0);
                 break;
+            case R.id.mult_window_number:
+                mBitmap=captureWebView(mWebView);
+                //// TODO: 16/10/29 添加截图
+                //zoomOut();
+                ((WebActivity)getActivity()).changeWindow();
+                break;
             default:
                 break;
         }
     }
 
-    /*@Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        ((TextView)menu.findItem(action_new_web).getActionView()).setText(MyApp.sWebFragmentList.size()+"");
-        super.onPrepareOptionsMenu(menu);
-    }*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -157,33 +179,7 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
                 if (mWebView.canGoBack())
                 mWebView.goBack();
                 return true;
-            /*
-                pvhX = PropertyValuesHolder.ofFloat("scaleX", 1f, 0.6f);
-                pvhY = PropertyValuesHolder.ofFloat("scaleY", 1f, 0.6f);
-                scale = ObjectAnimator.ofPropertyValuesHolder(mWebView, pvhX, pvhY);
-                scale.setDuration(50);
-                scale.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                });
-                scale.start();
-                break;*/
-            case action_new_web:
+            case R.id.action_new_web:
                 ((WebActivity)getActivity()).getNewWebFragment(null);
                 break;
             case R.id.action_forward:
@@ -246,10 +242,79 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
         mTransport = transport;
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mWebView.destroyDrawingCache();
+    //截图
+    private Bitmap captureWebView(WebView webView){
+        Picture snapShot = webView.capturePicture();
+
+        Bitmap bmp = null;
+        int width = snapShot.getWidth();
+        int height = (int) (width *13/9);//默认16:9的设备比例，算出截屏的高
+
+        if (width > 0 && height > 0)
+        {
+            bmp = Bitmap.createBitmap(width ,height , Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bmp);
+            snapShot.draw(canvas);
+
+        }
+        return bmp;
+    }
+    public void zoomOut(){
+        pvhX = PropertyValuesHolder.ofFloat("scaleX", 1f, 0.6f);
+        pvhY = PropertyValuesHolder.ofFloat("scaleY", 1f, 0.6f);
+        scale = ObjectAnimator.ofPropertyValuesHolder(mWebView, pvhX, pvhY);
+        scale.setDuration(50);
+        scale.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        scale.start();
+    }
+
+    public void zoomIn(){
+        pvhX = PropertyValuesHolder.ofFloat("scaleX", 0.6f, 1f);
+        pvhY = PropertyValuesHolder.ofFloat("scaleY", 0.6f, 1f);
+        scale = ObjectAnimator.ofPropertyValuesHolder(mWebView, pvhX, pvhY);
+        scale.setDuration(50);
+        scale.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        scale.start();
+    }
+
+    public long getAId() {
+        return mAId;
     }
 }
 

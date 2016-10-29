@@ -20,12 +20,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".home.WebActivity" android:launchMode="singleTask"/>
-        <activity android:name=".bookmarks.BookmarksActivity">
-        </activity>
-        <activity android:name=".history.HistoryActivity">
-        </activity>
-        <activity android:name=".download.DownloadActivity">
-        </activity>
+        <activity android:name=".bookmarks.BookmarksActivity"/>
+        <activity android:name=".history.HistoryActivity"/>
+        <activity android:name=".download.DownloadActivity"/>
+        <activity android:name=".multiwindow.MultiWindow"/>
     </application>
 
 </manifest>

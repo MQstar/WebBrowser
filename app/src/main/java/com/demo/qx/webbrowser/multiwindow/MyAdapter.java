@@ -1,4 +1,4 @@
-package com.demo.qx.webbrowser.custom;
+package com.demo.qx.webbrowser.multiwindow;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;

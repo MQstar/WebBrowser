@@ -19,12 +19,12 @@ import com.demo.qx.webbrowser.R;
 import com.demo.qx.webbrowser.bookmarks.BookmarksActivity;
 import com.demo.qx.webbrowser.download.DownloadActivity;
 import com.demo.qx.webbrowser.history.HistoryActivity;
+import com.demo.qx.webbrowser.multiwindow.MultiWindow;
 import com.demo.qx.webbrowser.utils.Injection;
 
 import static com.demo.qx.webbrowser.utils.ActivityUtils.addFragmentToActivity;
 
 public class WebActivity extends AppCompatActivity {
-    //DisplayMetrics mDisplayMetrics;
     WebFragment mWebFragment;
     private WebPresenter mPresenter;
     final String HOME = "file:///android_asset/www/index1.html";
@@ -32,7 +32,7 @@ public class WebActivity extends AppCompatActivity {
     EditText mEditText;
     TextView mShowAddress;
     TextView mRefresh;
-    TextView mMultWindow;
+    TextView mMultiWindow;
     ActionBar ab;
     private long exitTime = 0;
     private WebActivity mActivity;
@@ -51,7 +51,7 @@ public class WebActivity extends AppCompatActivity {
         mShowAddress = (TextView) findViewById(R.id.show_address);
         mEditText = (EditText) findViewById(R.id.address);
         mRefresh = (TextView) findViewById(R.id.button_refresh);
-        mMultWindow = (TextView) findViewById(R.id.mult_window_number);
+        mMultiWindow = (TextView) findViewById(R.id.mult_window_number);
         setSupportActionBar(toolbar);
         mActivity = WebActivity.this;
         intent = getIntent();
@@ -86,12 +86,26 @@ public class WebActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode==4)
+        {
+            switch (resultCode) {
+                case RESULT_OK:
+                    showFragment(data.getIntExtra("ID",0));
+                    break;
+                case RESULT_CANCELED:
+                    getNewWebFragment(null);
+                    break;
+                default:
+                    break;
+            }
+        }else {
         switch (resultCode) {
             case RESULT_OK:
                 getNewWebFragment(data.getStringExtra("URL"));
                 break;
             default:
                 break;
+        }
         }
     }
 
@@ -106,7 +120,7 @@ public class WebActivity extends AppCompatActivity {
         transaction.add(R.id.web_fragment, mWebFragment);
         transaction.commitAllowingStateLoss();
         mPresenter = new WebPresenter(Injection.provideTasksRepository(getApplicationContext()), mWebFragment);
-        mMultWindow.setText(MyApp.sWebFragmentList.size()+"");
+        mMultiWindow.setText(MyApp.sWebFragmentList.size()+"");
     }
 
     private void processExtraData() {
@@ -121,7 +135,7 @@ public class WebActivity extends AppCompatActivity {
             addFragmentToActivity(getSupportFragmentManager(), mWebFragment, R.id.web_fragment);
         }
         mPresenter = new WebPresenter(Injection.provideTasksRepository(getApplicationContext()), mWebFragment);
-        mMultWindow.setText(MyApp.sWebFragmentList.size()+"");
+        mMultiWindow.setText(MyApp.sWebFragmentList.size()+"");
     }
 
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -158,27 +172,18 @@ public class WebActivity extends AppCompatActivity {
         }
         return false;
     }
-    //截图
-   /* private Bitmap captureWebView(WebView webView){
-        Picture snapShot = webView.capturePicture();
-
-        Bitmap bmp = null;
-        int width = snapShot.getWidth();
-        int height = (int) (width * 9 / 16);//默认16:9的设备比例，算出截屏的高
-
-        if (width > 0 && height > 0)
-        {
-            bmp = Bitmap.createBitmap(width ,height , Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bmp);
-            snapShot.draw(canvas);
-
-        }
-        return bmp;
-    }*/
 
     public void setNewWindow(WebView.WebViewTransport webViewTransport) {
         getNewWebFragment(null);
         mWebFragment.setTransport(webViewTransport);
+    }
+
+    public void showFragment(int id){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.hide(mWebFragment);
+        transaction.show(MyApp.sWebFragmentList.get(id));
+        transaction.commitAllowingStateLoss();
+        mMultiWindow.setText(MyApp.sWebFragmentList.size()+"");
     }
 
     public void openBookmarks() {
@@ -193,4 +198,7 @@ public class WebActivity extends AppCompatActivity {
         startActivityForResult(new Intent(mActivity, DownloadActivity.class), 3);
     }
 
+    public void changeWindow(){
+        startActivityForResult(new Intent(mActivity, MultiWindow.class), 4);
+    }
 }
