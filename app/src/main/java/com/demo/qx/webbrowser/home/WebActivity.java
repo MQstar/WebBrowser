@@ -56,7 +56,8 @@ public class WebActivity extends AppCompatActivity {
         mActivity = WebActivity.this;
         intent = getIntent();
         //mDisplayMetrics=getResources().getDisplayMetrics();
-        if (savedInstanceState == null) processExtraData();
+        //if (savedInstanceState == null)
+            processExtraData();
     }
 
 
@@ -75,6 +76,11 @@ public class WebActivity extends AppCompatActivity {
         // } else if (mWebView.canGoBack()) {
         //     mWebView.goBack();
         // } else {
+        if (mEditText.getVisibility()==View.VISIBLE)
+        {
+            mWebFragment.hideEdit();
+            return;
+        }
         if ((System.currentTimeMillis() - exitTime) > 2000) {
             Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
             exitTime = System.currentTimeMillis();
@@ -201,5 +207,18 @@ public class WebActivity extends AppCompatActivity {
     public void changeWindow(){
         startActivityForResult(new Intent(mActivity, MultiWindow.class), 4);
         overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+    }
+
+    public void getBackWebFragment(String url) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (url == null)
+            return;
+        WebFragment backWebFragment = WebFragment.newInstance(url);
+        MyApp.sWebFragmentList.add(backWebFragment);
+        transaction.add(R.id.web_fragment, backWebFragment);
+        transaction.hide(backWebFragment);
+        transaction.commitAllowingStateLoss();
+        mPresenter = new WebPresenter(Injection.provideTasksRepository(getApplicationContext()), backWebFragment);
+        mMultiWindow.setText(MyApp.sWebFragmentList.size()+"");
     }
 }

@@ -20,7 +20,8 @@ public class HistoryActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
-        ab.setTitle("历史");
+        ab.setLogo(R.drawable.ic_history_black_24dp);
+        ab.setTitle("");
         ab.setHomeAsUpIndicator(R.drawable.ic_chevron_left_black_24dp);
         ab.setDisplayHomeAsUpEnabled(true);
         HistoryFragment historyFragment = (HistoryFragment) getSupportFragmentManager()

@@ -15,10 +15,10 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.demo.qx.webbrowser.R;
+import com.demo.qx.webbrowser.custom.ItemLongClickedPopWindow;
 import com.demo.qx.webbrowser.data.WebPage;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class HistoryFragment extends Fragment implements HistoryContract.View {
     private HistoryAdapter mListAdapter;
     private ExpandableListView mListView;
     private TextView mTextView;
-    private PopupWindow mPopupWindow;
+    private ItemLongClickedPopWindow mPopupWindow;
 
     public static HistoryFragment newInstance() {
         return new HistoryFragment();
@@ -251,12 +251,13 @@ public class HistoryFragment extends Fragment implements HistoryContract.View {
             v.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_history, null);
-                    mPopupWindow = new PopupWindow(contentView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
-                    mPopupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_size));
-                    mPopupWindow.setOutsideTouchable(true);
+                    mPopupWindow=new ItemLongClickedPopWindow(getActivity(),ItemLongClickedPopWindow.HISTORY_POPUPWINDOW,LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    //View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_history, null);
+                    //mPopupWindow = new PopupWindow(contentView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+                    //mPopupWindow.setOutsideTouchable(true);
+                    //mPopupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_size));
                     mPopupWindow.showAsDropDown(v, v.getWidth() / 2, -v.getHeight() / 2);
-                    contentView.findViewById(R.id.item_longclicked_deleteHistory).setOnClickListener(new ItemClickedListener(webPage));
+                    mPopupWindow.getView(R.id.item_longclicked_deleteHistory).setOnClickListener(new ItemClickedListener(webPage));
                     return true;
                 }
             });

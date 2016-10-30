@@ -31,12 +31,12 @@ public class MultiWindow extends AppCompatActivity implements MultiFragment.Remo
 
     void initView() {
         setContentView(R.layout.multiwindow);
-        mImageView= (ImageView) findViewById(R.id.add_page);
+        mImageView = (ImageView) findViewById(R.id.add_page);
         mImageView.setOnClickListener(this);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         MyApp.sMultiFragments.clear();
         for (int i = 0; i < MyApp.sWebFragmentList.size(); i++) {
-            MultiFragment tmp = MultiFragment.getInstance(MyApp.sWebFragmentList.get(i).getAId(),MyApp.sWebFragmentList.get(i).mCurrentTitle,MyApp.sWebFragmentList.get(i).mBitmap,this,this);
+            MultiFragment tmp = MultiFragment.getInstance(MyApp.sWebFragmentList.get(i).getAId(), MyApp.sWebFragmentList.get(i).mCurrentTitle, MyApp.sWebFragmentList.get(i).mBitmap, this, this);
             MyApp.sMultiFragments.add(tmp);
         }
         mMyAdapter = new MyAdapter(getSupportFragmentManager());
@@ -45,53 +45,55 @@ public class MultiWindow extends AppCompatActivity implements MultiFragment.Remo
         mViewPager.setOffscreenPageLimit(3);
     }
 
-    @Override
-    public void remove(long hCode) {
-        if (MyApp.sMultiFragments.size()==0)return;
-        Iterator<MultiFragment> iterator = MyApp.sMultiFragments.iterator();
-        while(iterator.hasNext()){
-            MultiFragment temp = iterator.next();
-            if (temp.getHCode() == hCode)
-            {iterator.remove();
-            break;}
-        }
-            mMyAdapter.notifyDataSetChanged();
-        Iterator<WebFragment> iterator2 = MyApp.sWebFragmentList.iterator();
-        while(iterator.hasNext()){
-            WebFragment temp = iterator2.next();
-            if (temp.getAId() == hCode)
-            {iterator2.remove();
-                break;}
-        }
-        if (MyApp.sMultiFragments.size()==0)noFragmentRemain();
-    }
-    void noFragmentRemain(){
+    void noFragmentRemain() {
         Intent intent = getIntent();
         setResult(911119, intent);
         finish();
-        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    @Override
+    public void remove(long hCode) {
+        if (MyApp.sWebFragmentList.size() == 0||MyApp.sMultiFragments.size() == 0) return;
+        Iterator<MultiFragment> iterator = MyApp.sMultiFragments.iterator();
+        while (iterator.hasNext()) {
+            MultiFragment temp = iterator.next();
+            if (temp.getHCode() == hCode) {
+                iterator.remove();
+            }
+        }
+        mMyAdapter.notifyDataSetChanged();
+        Iterator<WebFragment> webIterator = MyApp.sWebFragmentList.iterator();
+        while (webIterator.hasNext()) {
+            WebFragment temp = webIterator.next();
+            if (temp.getAId() == hCode) {
+                webIterator.remove();
+            }
+        }
+        if (MyApp.sMultiFragments.size() == 0) noFragmentRemain();
     }
 
     @Override
     public void open(long hCode) {
-        int index=0;
+        int index = 0;
         for (int i = 0; i < MyApp.sWebFragmentList.size(); i++) {
-            if (MyApp.sWebFragmentList.get(i).getAId()==hCode){
-                index=i;
+            if (MyApp.sWebFragmentList.get(i).getAId() == hCode) {
+                index = i;
                 break;
-        }}
+            }
+        }
         Intent intent = getIntent();
         intent.putExtra("ID", index);
         setResult(RESULT_OK, intent);
         finish();
-        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override

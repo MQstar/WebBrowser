@@ -20,7 +20,8 @@ public class BookmarksActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
-        ab.setTitle("书签");
+        ab.setLogo(R.drawable.ic_star_border_black_24dp);
+        ab.setTitle("");
         ab.setHomeAsUpIndicator(R.drawable.ic_chevron_left_black_24dp);
         ab.setDisplayHomeAsUpEnabled(true);
         BookmarksFragment bookmarksFragment = (BookmarksFragment) getSupportFragmentManager()

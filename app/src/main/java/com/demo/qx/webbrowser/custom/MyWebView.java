@@ -24,7 +24,6 @@ public class MyWebView extends WebView {
         init();
     }
 
-
     void init() {
         getSettings().setJavaScriptEnabled(true);
         getSettings().setBuiltInZoomControls(true);

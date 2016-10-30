@@ -12,10 +12,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.demo.qx.webbrowser.R;
+import com.demo.qx.webbrowser.custom.ItemLongClickedPopWindow;
 import com.demo.qx.webbrowser.data.WebPage;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class BookmarksFragment extends Fragment implements BookmarksContract.Vie
     private BookmarksAdapter mListAdapter;
     private ListView mListView;
     private TextView mTextView;
-    PopupWindow mPopupWindow;
+    ItemLongClickedPopWindow mPopupWindow;
 
     public static BookmarksFragment newInstance() {
         return new BookmarksFragment();
@@ -197,16 +197,12 @@ public class BookmarksFragment extends Fragment implements BookmarksContract.Vie
             rowView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_bookmarks, null);
-                    mPopupWindow = new PopupWindow(contentView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
-                    mPopupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_size));
-                    mPopupWindow.setOutsideTouchable(true);
+                    //View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_bookmarks, null);
+                    mPopupWindow = new ItemLongClickedPopWindow(getActivity(), ItemLongClickedPopWindow.BOOKMARKS_POPUPWINDOW,LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                     mPopupWindow.showAsDropDown(v, v.getWidth()/2, -v.getHeight()/2);
-                    TextView modify = (TextView)contentView.findViewById(R.id.item_longclicked_modifyBookmarks);
-                    TextView delete = (TextView)contentView.findViewById(R.id.item_longclicked_deleteBookmarks);
                     ItemClickedListener itemClickedListener = new ItemClickedListener(v);
-                    modify.setOnClickListener(itemClickedListener);
-                    delete.setOnClickListener(itemClickedListener);
+                    mPopupWindow.getView(R.id.item_longclicked_modifyBookmarks).setOnClickListener(itemClickedListener);
+                    mPopupWindow.getView(R.id.item_longclicked_deleteBookmarks).setOnClickListener(itemClickedListener);
                     return true;
                 }
             });

@@ -3,6 +3,8 @@ package com.demo.qx.webbrowser.home;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -12,11 +14,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -24,11 +28,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.URLUtil;
 import android.webkit.WebView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.demo.qx.webbrowser.R;
+import com.demo.qx.webbrowser.custom.ItemLongClickedPopWindow;
 import com.demo.qx.webbrowser.custom.MyAppWebViewClient;
 import com.demo.qx.webbrowser.custom.MyWebChromeClient;
 import com.demo.qx.webbrowser.custom.MyWebView;
@@ -37,14 +43,15 @@ import com.demo.qx.webbrowser.data.WebPage;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static android.content.Context.CLIPBOARD_SERVICE;
+
 
 /**
  * Created by qx on 16/10/24.
  */
 
-public class WebFragment extends Fragment implements WebContract.View, View.OnClickListener, TextView.OnEditorActionListener{
+public class WebFragment extends Fragment implements WebContract.View, View.OnClickListener, TextView.OnEditorActionListener, View.OnLongClickListener ,View.OnTouchListener{
     boolean isLoading;
-    boolean isTyping;
     WebContract.Presenter mPresenter;
     MyWebView mWebView;
     EditText mEditText;
@@ -61,7 +68,9 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
     static String URL;
     private WebView.WebViewTransport mTransport;
     public Bitmap mBitmap;
-    private long mAId;
+    private long mAId;//唯一标识id
+    private float point_x, point_y; //手指按下的位置
+    ItemLongClickedPopWindow mPopWindow;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,6 +96,8 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
         mWebView = (MyWebView) root.findViewById(R.id.web_view);
         mWebView.setWebChromeClient(new MyWebChromeClient((WebActivity) getActivity(),mPresenter));
         mWebView.setWebViewClient(new MyAppWebViewClient());
+        mWebView.setOnLongClickListener(this);
+        mWebView.setOnTouchListener(this);
         if (mTransport!=null)
         {
             mTransport.setWebView(mWebView);
@@ -97,12 +108,41 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
         return root;
     }
 
-
-
     public static WebFragment newInstance(String url) {
         URL=url;
         WebFragment webFragment = new WebFragment();
         return webFragment;
+    }
+
+    /**
+     * handle back button
+     */
+    @Override
+    public void onResume() {
+
+        super.onResume();
+
+        mWebView.setFocusableInTouchMode(true);
+        mWebView.requestFocus();
+        mWebView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK){
+                    if (mWebView.canGoBack())
+                    {mWebView.goBack();
+                    return true;}
+                }
+
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mBitmap=captureWebView(mWebView);
     }
 
     @Override
@@ -138,6 +178,14 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
            // super.onBackPressed();
         }
     }*/
+@Override
+public boolean onTouch(View v, MotionEvent event) {
+   // if (event.getAction() == MotionEvent.ACTION_DOWN) {
+        point_x = event.getX();
+        point_y = event.getY();
+   // }}
+    return false;
+}
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -158,7 +206,6 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
                     mWebView.reload();
                 break;
             case R.id.show_address:
-                isTyping = true;
                 mActionBar.hide();
                 mEditText.setText(mWebView.getUrl());
                 mEditText.setVisibility(View.VISIBLE);
@@ -167,7 +214,7 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
                 imm.showSoftInput(mEditText, 0);
                 break;
             case R.id.mult_window_number:
-                mBitmap=captureWebView(mWebView);
+                //mBitmap=captureWebView(mWebView);
                 //// TODO: 16/10/29 添加截图
                 //zoomOut();
                 ((WebActivity)getActivity()).changeWindow();
@@ -185,7 +232,7 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
                 mWebView.goBack();
                 return true;
             case R.id.action_new_web:
-                mBitmap=captureWebView(mWebView);
+                //mBitmap=captureWebView(mWebView);
                 ((WebActivity)getActivity()).getNewWebFragment(null);
                 break;
             case R.id.action_forward:
@@ -205,7 +252,6 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
             case R.id.download:
                 ((WebActivity)getActivity()).openDownload();
                 break;
-
             default:
                 break;
         }
@@ -221,11 +267,10 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
     }
 
     public void hideEdit() {
-        isTyping = false;
-        mActionBar.show();
-        mEditText.setVisibility(View.GONE);
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
+        mActionBar.show();
+        mEditText.setVisibility(View.GONE);
     }
 
     public void changeProgress(int progress) {
@@ -241,6 +286,7 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
                 mShowAddress.setText(mCurrentTitle);
             mProgressBar.setVisibility(ProgressBar.GONE);
             mRefresh.setBackgroundResource(R.drawable.ic_refresh_black_24dp);
+            mBitmap=captureWebView(mWebView);
         }
     }
 
@@ -328,6 +374,88 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
 
     public long getAId() {
         return mAId;
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        WebView.HitTestResult result = ((WebView) v).getHitTestResult();
+        if (null == result)
+            return false;
+        int type = result.getType();
+        if (type == WebView.HitTestResult.UNKNOWN_TYPE)
+            return false;
+        if (type == WebView.HitTestResult.EDIT_TEXT_TYPE)
+            return true;
+        ItemLongClickListener itemListener;
+        switch (type) {
+            case WebView.HitTestResult.EMAIL_TYPE:
+                Toast.makeText(getActivity(), "email", Toast.LENGTH_SHORT).show();
+                break;
+            case WebView.HitTestResult.GEO_TYPE:
+                Toast.makeText(getActivity(), "map", Toast.LENGTH_SHORT).show();
+                break;
+            case WebView.HitTestResult.IMAGE_TYPE:
+                Toast.makeText(getActivity(), "image", Toast.LENGTH_SHORT).show();
+                break;
+            case WebView.HitTestResult.PHONE_TYPE:
+                Toast.makeText(getActivity(), "phone", Toast.LENGTH_SHORT).show();
+                break;
+            case WebView.HitTestResult.SRC_ANCHOR_TYPE:
+                mPopWindow=new ItemLongClickedPopWindow(getActivity(),ItemLongClickedPopWindow.SRC_ANCHOR_TYPE_POPUPWINDOW, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                mPopWindow.showAtLocation(v, Gravity.TOP | Gravity.LEFT, (int)point_x, (int) point_y);
+                itemListener=new ItemLongClickListener(result.getExtra());
+                mPopWindow.getView(R.id.item_long_click_open).setOnClickListener(itemListener);
+                mPopWindow.getView(R.id.item_long_click_new_window).setOnClickListener(itemListener);
+                mPopWindow.getView(R.id.item_long_click_background_window).setOnClickListener(itemListener);
+                mPopWindow.getView(R.id.item_long_click_copy).setOnClickListener(itemListener);
+                mPopWindow.getView(R.id.item_long_click_download).setOnClickListener(itemListener);
+                break;
+            case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE:
+                mPopWindow = new ItemLongClickedPopWindow(getActivity(), ItemLongClickedPopWindow.SRC_IMAGE_ANCHOR_TYPE_POPUPWINDOW,LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                mPopWindow.showAtLocation(v, Gravity.TOP | Gravity.LEFT, (int)point_x, (int) point_y);
+                itemListener=new ItemLongClickListener(result.getExtra());
+                mPopWindow.getView(R.id.item_long_click_open).setOnClickListener(itemListener);
+                mPopWindow.getView(R.id.item_long_click_new_window).setOnClickListener(itemListener);
+                mPopWindow.getView(R.id.item_long_click_background_window).setOnClickListener(itemListener);
+                mPopWindow.getView(R.id.item_long_click_copy).setOnClickListener(itemListener);
+                mPopWindow.getView(R.id.item_long_click_download).setOnClickListener(itemListener);
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    private class ItemLongClickListener implements View.OnClickListener {
+        String extra;
+
+        public ItemLongClickListener(String extra) {
+            this.extra = extra;
+        }
+
+        @Override
+        public void onClick(View v) {
+            mPopWindow.dismiss();
+            switch (v.getId()){
+                case R.id.item_long_click_open:
+                    mWebView.loadUrl(extra);
+                    break;
+                case R.id.item_long_click_new_window:
+                    //mBitmap=captureWebView(mWebView);
+                    ((WebActivity)getActivity()).getNewWebFragment(extra);
+                    break;
+                case R.id.item_long_click_background_window:
+                    ((WebActivity)getActivity()).getBackWebFragment(extra);
+                    break;
+                case R.id.item_long_click_copy:
+                    ClipboardManager cbm = (ClipboardManager)getActivity().getSystemService(CLIPBOARD_SERVICE);
+                    cbm.setPrimaryClip(ClipData.newPlainText("链接",extra));
+                    break;
+                case R.id.item_long_click_download:
+                    //// TODO: 16/10/30 download
+                    break;
+            }
+        }
     }
 }
 

@@ -16,7 +16,7 @@ public class WelcomeActivity extends Activity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome_activity);
-        mHandler.sendEmptyMessageDelayed(GOTO_MAIN_ACTIVITY, 1000);//3秒跳转
+        mHandler.sendEmptyMessageDelayed(GOTO_MAIN_ACTIVITY, 800);//3秒跳转
     }
     private static final int GOTO_MAIN_ACTIVITY = 0;
     private Handler mHandler = new Handler(){
@@ -27,6 +27,7 @@ public class WelcomeActivity extends Activity{
                     Intent intent = new Intent();
                     intent.setClass(WelcomeActivity.this, WebActivity.class);
                     startActivity(intent);
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                     break;
                 default:
