@@ -39,5 +39,7 @@ public final class PersistenceContract {
         public static final String COLUMN_NAME_TITLE = "title";
         public static final String COLUMN_NAME_ADDRESS = "address";
         public static final String COLUMN_NAME_SIZE = "size";
+        public static final String COLUMN_NAME_CURRENT = "current";
+
     }
 }

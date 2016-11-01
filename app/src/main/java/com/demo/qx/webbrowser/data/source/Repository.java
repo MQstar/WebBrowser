@@ -4,7 +4,9 @@ import android.support.annotation.NonNull;
 
 import com.demo.qx.webbrowser.data.Download;
 import com.demo.qx.webbrowser.data.WebPage;
+import com.demo.qx.webbrowser.downloadUnity.DownloadManager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,7 +48,6 @@ public class Repository implements DataSource {
         }
 
         if (mBookmarksCacheIsDirty) {
-            // If the cache is dirty we need to fetch new data from the network.
             getBookmarksFromRemoteDataSource(callback);
         } else {
             mLocalDataSource.getBookmarks(new LoadCallback() {
@@ -99,10 +100,6 @@ public class Repository implements DataSource {
         mCachedBookmarks.remove(address);
     }
 
-
-
-
-
     @Override
     public void addHistory(WebPage webPage) {
         mRemoteDataSource.addHistory(webPage);
@@ -144,7 +141,6 @@ public class Repository implements DataSource {
         }
 
         if (mHistoryCacheIsDirty) {
-            // If the cache is dirty we need to fetch new data from the network.
             getHistoryFromRemoteDataSource(callback);
         } else {
             mLocalDataSource.getHistory(new LoadCallback() {
@@ -172,7 +168,6 @@ public class Repository implements DataSource {
         }
 
         if (mDownloadCacheIsDirty) {
-            // If the cache is dirty we need to fetch new data from the network.
             getDownloadFromRemoteDataSource(callback);
         } else {
             mLocalDataSource.getDownload(new DownloadLoadCallback() {
@@ -197,16 +192,17 @@ public class Repository implements DataSource {
     }
 
     @Override
-    public void addDownload(Download download) {
-        mRemoteDataSource.addDownload(download);
-        mLocalDataSource.addDownload(download);
+    public void addDownload(Download download, DownloadManager downloadManager) {
+        if (download.contentLength>0){
+        mRemoteDataSource.addDownload(download,downloadManager);
+        mLocalDataSource.addDownload(download,null);
 
         if (mCachedDownload == null) {
             mCachedDownload = new LinkedHashMap<>();
         }
         mCachedDownload.put(download.url, download);
+        }
     }
-
 
     @Override
     public void deleteAllDownload() {
@@ -225,58 +221,36 @@ public class Repository implements DataSource {
         mCachedDownload.remove(download);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Override
-    public void pause(Download download) {
+    public void pause(Download download, DownloadManager downloadManager) {
 
     }
 
     @Override
-    public void resume(Download download) {
+    public void resume(Download download, DownloadManager downloadManager) {
 
     }
 
     @Override
     public void removeDownloadAndFile(Download download) {
+        mRemoteDataSource.removeDownload(download);
+        mLocalDataSource.removeDownload(download);
+        mCachedDownload.remove(download);
+        File file=new File(download.path+File.separator+download.name);
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
+    @Override
+    public void startAll(DownloadManager downloadManager) {
 
     }
 
     @Override
-    public void startAll() {
+    public void pauseAll(DownloadManager downloadManager) {
 
     }
-
-    @Override
-    public void pauseAll() {
-
-    }
-
-
-
-
-
-
 
     private void refreshHistoryCache(List<WebPage> webPages) {
         if (mCachedHistory == null) {
@@ -359,7 +333,7 @@ public class Repository implements DataSource {
     private void refreshDownloadLocalDataSource(List<Download> downloads) {
         mLocalDataSource.deleteAllDownload();
         for (Download download : downloads) {
-            mLocalDataSource.addDownload(download);
+            mLocalDataSource.addDownload(download,null);
         }
     }
     private void getDownloadFromRemoteDataSource(@NonNull final DownloadLoadCallback callback) {

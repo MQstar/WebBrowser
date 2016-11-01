@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.demo.qx.webbrowser.data.Download;
 import com.demo.qx.webbrowser.data.WebPage;
+import com.demo.qx.webbrowser.downloadUnity.DownloadManager;
 
 import java.util.List;
 
@@ -26,15 +27,15 @@ public interface DataSource {
 
     void getHistory(@NonNull LoadCallback loadCallback);
 
-    void addDownload(@NonNull Download download);
+    void addDownload(@NonNull Download download, DownloadManager downloadManager);
 
     void refreshDownload();
 
     void getDownload(@NonNull DownloadLoadCallback downloadLoadCallback);
 
-    void pause(@NonNull Download download);
+    void pause(@NonNull Download download, DownloadManager downloadManager);
 
-    void resume(@NonNull Download download);
+    void resume(@NonNull Download download, DownloadManager downloadManager);
 
     void removeDownloadAndFile(@NonNull Download download);
 
@@ -42,10 +43,9 @@ public interface DataSource {
 
     void removeDownload(@NonNull Download download);
 
-    void startAll();
+    void startAll(DownloadManager downloadManager);
 
-    void pauseAll();
-
+    void pauseAll(DownloadManager downloadManager);
 
     interface LoadCallback {
 
@@ -62,7 +62,7 @@ public interface DataSource {
 
     interface GetCallback {
 
-        void onLoaded(WebPage webPage);
+        void onLoaded(Download download);
 
     }
     void addBookmarks(@NonNull WebPage webPage);

@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import com.demo.qx.webbrowser.data.Download;
 import com.demo.qx.webbrowser.data.WebPage;
 import com.demo.qx.webbrowser.data.source.DataSource;
+import com.demo.qx.webbrowser.downloadUnity.DownloadManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,18 +62,36 @@ public class LocalDataSource implements DataSource {
     }
 
     @Override
-    public void deleteAllHistory() {
-        SQLiteDatabase db = mDBHelper.getWritableDatabase();
-        db.delete(PersistenceContract.History.TABLE_NAME, null, null);
-        db.close();
-    }
-
-    @Override
     public void removeBookmarks(String address) {
         SQLiteDatabase db = mDBHelper.getWritableDatabase();
         String selection = PersistenceContract.Bookmarks.COLUMN_NAME_ADDRESS + " LIKE ?";
         String[] selectionArgs = {address};
         db.delete(PersistenceContract.Bookmarks.TABLE_NAME, selection, selectionArgs);
+        db.close();
+    }
+
+    @Override
+    public void addBookmarks(@NonNull WebPage webPage) {
+        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(PersistenceContract.Bookmarks.COLUMN_NAME_ADDRESS, webPage.getUrl());
+        values.put(PersistenceContract.Bookmarks.COLUMN_NAME_TITLE, webPage.getTitle());
+        db.insert(PersistenceContract.Bookmarks.TABLE_NAME, null, values);
+        db.close();
+    }
+
+    @Override
+    public void deleteAllBookmarks() {
+        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        db.delete(PersistenceContract.Bookmarks.TABLE_NAME, null, null);
+        db.close();
+    }
+
+
+    @Override
+    public void deleteAllHistory() {
+        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        db.delete(PersistenceContract.History.TABLE_NAME, null, null);
         db.close();
     }
 
@@ -85,7 +104,6 @@ public class LocalDataSource implements DataSource {
         db.delete(PersistenceContract.History.TABLE_NAME, selection, selectionArgs);
         db.close();
     }
-
 
     @Override
     public void getHistory(@NonNull LoadCallback callback) {
@@ -119,19 +137,28 @@ public class LocalDataSource implements DataSource {
     }
 
     @Override
-    public void addDownload(Download download) {
+    public void addHistory(WebPage webPage) {
+        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(PersistenceContract.History.COLUMN_NAME_ADDRESS, webPage.getUrl());
+        values.put(PersistenceContract.History.COLUMN_NAME_TITLE, webPage.getTitle());
+        values.put(PersistenceContract.History.COLUMN_NAME_DATE, webPage.getDate());
+        db.insert(PersistenceContract.History.TABLE_NAME, null, values);
+        db.close();
+    }
+
+
+    @Override
+    public void addDownload(Download download, DownloadManager downloadManager) {
         SQLiteDatabase db = mDBHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(PersistenceContract.Download.COLUMN_NAME_ADDRESS, download.url);
         values.put(PersistenceContract.Download.COLUMN_NAME_TITLE, download.name);
         values.put(PersistenceContract.Download.COLUMN_NAME_SIZE, download.contentLength);
+        values.put(PersistenceContract.Download.COLUMN_NAME_CURRENT, download.currentLength);
         db.insert(PersistenceContract.Download.TABLE_NAME, null, values);
         db.close();
     }
-
-
-//// FIXME: 16/11/1 添加文件路径,文件当前下载进度等字段
-//// TODO: 16/11/1 添加文件路径,文件当前下载进度等字段
 
     @Override
     public void getDownload(DownloadLoadCallback downloadLoadCallback) {
@@ -148,8 +175,9 @@ public class LocalDataSource implements DataSource {
             while (c.moveToNext()) {
                 String address = c.getString(c.getColumnIndexOrThrow(PersistenceContract.Download.COLUMN_NAME_ADDRESS));
                 String title = c.getString(c.getColumnIndexOrThrow(PersistenceContract.Download.COLUMN_NAME_TITLE));
-                long date = Long.parseLong(c.getString(c.getColumnIndexOrThrow(PersistenceContract.Download.COLUMN_NAME_SIZE)));
-                Download download = new Download(address, title, date);
+                long size = c.getLong(c.getColumnIndexOrThrow(PersistenceContract.Download.COLUMN_NAME_SIZE));
+                long current = c.getLong(c.getColumnIndexOrThrow(PersistenceContract.Download.COLUMN_NAME_CURRENT));
+                Download download = new Download(address, title, size,current);
                 downloads.add(download);
             }
         }
@@ -163,6 +191,28 @@ public class LocalDataSource implements DataSource {
             downloadLoadCallback.onLoaded(downloads);
         }
     }
+
+    @Override
+    public void removeDownloadAndFile(Download download) {
+
+    }
+
+    @Override
+    public void deleteAllDownload() {
+        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        db.delete(PersistenceContract.Download.TABLE_NAME, null, null);
+        db.close();
+    }
+
+    @Override
+    public void removeDownload(Download download) {
+        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        String selection = PersistenceContract.Download.COLUMN_NAME_ADDRESS + " LIKE ?";
+        String[] selectionArgs = {download.url};
+        db.delete(PersistenceContract.Bookmarks.TABLE_NAME, selection, selectionArgs);
+        db.close();
+    }
+
 
     @Override
     public void pause(Download download) {
@@ -186,67 +236,20 @@ public class LocalDataSource implements DataSource {
     }
 
 
-    @Override
-    public void removeDownloadAndFile(Download download) {
 
-    }
-
-    @Override
-    public void deleteAllDownload() {
-        SQLiteDatabase db = mDBHelper.getWritableDatabase();
-        db.delete(PersistenceContract.Download.TABLE_NAME, null, null);
-        db.close();
-    }
-
-    @Override
-    public void removeDownload(Download download) {
-        SQLiteDatabase db = mDBHelper.getWritableDatabase();
-        String selection = PersistenceContract.Download.COLUMN_NAME_ADDRESS + " LIKE ?";
-        String[] selectionArgs = {download.url};
-        db.delete(PersistenceContract.Bookmarks.TABLE_NAME, selection, selectionArgs);
-        db.close();
-    }
-
-    @Override
-    public void addBookmarks(@NonNull WebPage webPage) {
-        SQLiteDatabase db = mDBHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(PersistenceContract.Bookmarks.COLUMN_NAME_ADDRESS, webPage.getUrl());
-        values.put(PersistenceContract.Bookmarks.COLUMN_NAME_TITLE, webPage.getTitle());
-        db.insert(PersistenceContract.Bookmarks.TABLE_NAME, null, values);
-        db.close();
-    }
-
-    @Override
-    public void deleteAllBookmarks() {
-        SQLiteDatabase db = mDBHelper.getWritableDatabase();
-        db.delete(PersistenceContract.Bookmarks.TABLE_NAME, null, null);
-        db.close();
-    }
-
-    @Override
-    public void addHistory(WebPage webPage) {
-        SQLiteDatabase db = mDBHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(PersistenceContract.History.COLUMN_NAME_ADDRESS, webPage.getUrl());
-        values.put(PersistenceContract.History.COLUMN_NAME_TITLE, webPage.getTitle());
-        values.put(PersistenceContract.History.COLUMN_NAME_DATE, webPage.getDate());
-        db.insert(PersistenceContract.History.TABLE_NAME, null, values);
-        db.close();
-    }
 
     @Override
     public void refreshBookmarks() {
-
+        //do nothing
     }
 
     @Override
     public void refreshHistory() {
-
+        //do nothing
     }
 
     @Override
     public void refreshDownload() {
-
+        //do nothing
     }
 }

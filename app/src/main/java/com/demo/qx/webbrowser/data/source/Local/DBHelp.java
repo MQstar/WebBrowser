@@ -15,6 +15,8 @@ public class DBHelp extends SQLiteOpenHelper {
 
     private static final String TEXT_TYPE = " TEXT";
 
+    public static final String INTEGER_TYPE = " INTEGER";
+
     private static final String COMMA_SEP = ",";
 
     private static final String SQL_CREATE_BOOKMARKS =
@@ -35,7 +37,8 @@ public class DBHelp extends SQLiteOpenHelper {
                     PersistenceContract.Download._ID + TEXT_TYPE + " PRIMARY KEY," +
                     PersistenceContract.Download.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
                     PersistenceContract.Download.COLUMN_NAME_ADDRESS + TEXT_TYPE + COMMA_SEP +
-                    PersistenceContract.Download.COLUMN_NAME_SIZE + TEXT_TYPE +
+                    PersistenceContract.Download.COLUMN_NAME_SIZE + INTEGER_TYPE +
+                    PersistenceContract.Download.COLUMN_NAME_CURRENT + INTEGER_TYPE + COMMA_SEP +
                     " )";
 
     public DBHelp(Context context) {

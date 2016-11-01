@@ -40,6 +40,7 @@ import com.demo.qx.webbrowser.custom.MyWebChromeClient;
 import com.demo.qx.webbrowser.custom.MyWebView;
 import com.demo.qx.webbrowser.data.Download;
 import com.demo.qx.webbrowser.data.WebPage;
+import com.demo.qx.webbrowser.downloadUnity.DownloadManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -102,7 +103,7 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
         mWebView.setDownloadListener(new DownloadListener() {
             @Override
             public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
-                mPresenter.addDownload(new Download(url,contentLength));
+                mPresenter.addDownload(new Download(url,contentLength),DownloadManager.getInstance(getActivity()));
                 Toast.makeText(getActivity(), "开始下载", Toast.LENGTH_SHORT).show();
             }
         });
@@ -411,7 +412,7 @@ public boolean onTouch(View v, MotionEvent event) {
                     cbm.setPrimaryClip(ClipData.newPlainText("链接",extra));
                     break;
                 case R.id.item_long_click_download:
-                    mPresenter.addDownload(new Download(extra));
+                    mPresenter.addDownload(new Download(extra), DownloadManager.getInstance(getActivity()));
                     break;
             }
         }

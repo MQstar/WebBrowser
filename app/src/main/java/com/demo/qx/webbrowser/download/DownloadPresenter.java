@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.demo.qx.webbrowser.data.Download;
 import com.demo.qx.webbrowser.data.source.DataSource;
 import com.demo.qx.webbrowser.data.source.Repository;
+import com.demo.qx.webbrowser.downloadUnity.DownloadManager;
 
 import java.util.List;
 
@@ -48,13 +49,13 @@ public class DownloadPresenter implements DownloadContract.Presenter{
     }
 
     @Override
-    public void pause(Download download) {
-        mRepository.pause(download);
+    public void pause(Download download, DownloadManager downloadManager) {
+        mRepository.pause(download,downloadManager);
     }
 
     @Override
-    public void resume(Download download) {
-        mRepository.resume(download);
+    public void resume(Download download, DownloadManager downloadManager) {
+        mRepository.resume(download,downloadManager);
     }
 
     @Override
@@ -70,13 +71,13 @@ public class DownloadPresenter implements DownloadContract.Presenter{
     }
 
     @Override
-    public void startAll() {
-        mRepository.startAll();
+    public void startAll(DownloadManager downloadManager) {
+        mRepository.startAll(downloadManager);
     }
 
     @Override
-    public void pauseAll() {
-        mRepository.pauseAll();
+    public void pauseAll(DownloadManager downloadManager) {
+        mRepository.pauseAll(downloadManager);
     }
     private void processDownload(List<Download> downloads) {
         if (downloads.isEmpty()) {

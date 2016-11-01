@@ -3,8 +3,9 @@ package com.demo.qx.webbrowser.data.source.Remote;
 import android.support.annotation.NonNull;
 
 import com.demo.qx.webbrowser.data.Download;
-import com.demo.qx.webbrowser.data.source.DataSource;
 import com.demo.qx.webbrowser.data.WebPage;
+import com.demo.qx.webbrowser.data.source.DataSource;
+import com.demo.qx.webbrowser.downloadUnity.DownloadManager;
 
 /**
  * Created by qx on 16/10/25.
@@ -18,14 +19,29 @@ public class RemoteDataSource implements DataSource {
         }
         return INSTANCE;
     }
-
+//Bookmarks
     @Override
     public void getBookmarks(@NonNull LoadCallback loadCallback) {
 
     }
 
     @Override
-    public void refreshBookmarks() {
+    public void addBookmarks(@NonNull WebPage webPage) {
+
+    }
+
+    @Override
+    public void deleteAllBookmarks() {
+
+    }
+
+    @Override
+    public void removeBookmarks(String address) {
+
+    }
+//History
+    @Override
+    public void addHistory(@NonNull WebPage webPage) {
 
     }
 
@@ -35,17 +51,7 @@ public class RemoteDataSource implements DataSource {
     }
 
     @Override
-    public void removeBookmarks(String address) {
-
-    }
-
-    @Override
     public void removeHistory(@NonNull WebPage webPage) {
-
-    }
-
-    @Override
-    public void refreshHistory() {
 
     }
 
@@ -53,14 +59,9 @@ public class RemoteDataSource implements DataSource {
     public void getHistory(@NonNull LoadCallback loadCallback) {
 
     }
-
+    //Download
     @Override
-    public void addDownload(Download download) {
-
-    }
-
-    @Override
-    public void refreshDownload() {
+    public void addDownload(Download download, DownloadManager downloadManager) {
 
     }
 
@@ -80,6 +81,16 @@ public class RemoteDataSource implements DataSource {
     }
 
     @Override
+    public void startAll() {
+
+    }
+
+    @Override
+    public void pauseAll() {
+
+    }
+
+    @Override
     public void removeDownloadAndFile(Download download) {
 
     }
@@ -95,29 +106,15 @@ public class RemoteDataSource implements DataSource {
     }
 
     @Override
-    public void startAll() {
-
+    public void refreshBookmarks() {
+        //do nothing
     }
-
     @Override
-    public void pauseAll() {
-
+    public void refreshHistory() {
+        //do nothing
     }
-
-
     @Override
-    public void addBookmarks(@NonNull WebPage webPage) {
-
-    }
-
-    @Override
-    public void deleteAllBookmarks() {
-
-    }
-
-
-    @Override
-    public void addHistory(@NonNull WebPage webPage) {
-
+    public void refreshDownload() {
+        //do nothing
     }
 }

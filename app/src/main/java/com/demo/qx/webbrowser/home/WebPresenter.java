@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.demo.qx.webbrowser.data.Download;
 import com.demo.qx.webbrowser.data.source.Repository;
 import com.demo.qx.webbrowser.data.WebPage;
+import com.demo.qx.webbrowser.downloadUnity.DownloadManager;
 
 /**
  * Created by qx on 16/10/25.
@@ -50,8 +51,8 @@ public class WebPresenter implements WebContract.Presenter {
     }
 
     @Override
-    public void addDownload(Download download) {
-        mRepository.addDownload(download);
+    public void addDownload(Download download, DownloadManager downloadManager) {
+        mRepository.addDownload(download,downloadManager);
     }
 
 }
