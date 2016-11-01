@@ -14,6 +14,9 @@ import com.demo.qx.webbrowser.home.WebFragment;
 
 import java.util.Iterator;
 
+import static com.demo.qx.webbrowser.MyApp.RESULT_NO_BACK;
+import static com.demo.qx.webbrowser.MyApp.RESULT_NO_FRAGMENT_REMAIN;
+
 /**
  * Created by qx on 16/10/24.
  */
@@ -47,7 +50,7 @@ public class MultiWindow extends AppCompatActivity implements MultiFragment.Remo
 
     void noFragmentRemain() {
         Intent intent = getIntent();
-        setResult(911119, intent);
+        setResult(RESULT_NO_FRAGMENT_REMAIN, intent);
         finish();
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
@@ -92,6 +95,8 @@ public class MultiWindow extends AppCompatActivity implements MultiFragment.Remo
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Intent intent = getIntent();
+        setResult(RESULT_NO_BACK, intent);
         finish();
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }

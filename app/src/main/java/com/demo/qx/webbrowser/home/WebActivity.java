@@ -22,6 +22,8 @@ import com.demo.qx.webbrowser.history.HistoryActivity;
 import com.demo.qx.webbrowser.multiwindow.MultiWindow;
 import com.demo.qx.webbrowser.utils.Injection;
 
+import static com.demo.qx.webbrowser.MyApp.RESULT_NO_BACK;
+import static com.demo.qx.webbrowser.MyApp.RESULT_NO_FRAGMENT_REMAIN;
 import static com.demo.qx.webbrowser.utils.ActivityUtils.addFragmentToActivity;
 
 public class WebActivity extends AppCompatActivity {
@@ -94,8 +96,10 @@ public class WebActivity extends AppCompatActivity {
                 case RESULT_OK:
                     showFragment(data.getIntExtra("ID",0));
                     break;
-                case 911119:
+                case RESULT_NO_FRAGMENT_REMAIN:
                     getNewWebFragment(null);
+                    break;
+                case RESULT_NO_BACK:
                     break;
                 default:
                     break;

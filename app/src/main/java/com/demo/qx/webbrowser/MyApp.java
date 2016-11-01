@@ -13,6 +13,8 @@ import java.util.List;
  */
 
 public class MyApp extends Application {
+    public static final int RESULT_NO_FRAGMENT_REMAIN = 911119;
+    public static final int RESULT_NO_BACK = 119911;
     public static List<MultiFragment> sMultiFragments =new ArrayList<>();
     public static List<WebFragment> sWebFragmentList =new ArrayList<>();
 }
