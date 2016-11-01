@@ -19,11 +19,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".home.WebActivity" android:launchMode="singleTask"/>
+        <activity android:name=".home.WebActivity" android:launchMode="singleTask" android:screenOrientation="portrait" />
         <activity android:name=".bookmarks.BookmarksActivity"/>
         <activity android:name=".history.HistoryActivity"/>
         <activity android:name=".download.DownloadActivity"/>
         <activity android:name=".multiwindow.MultiWindow"/>
+        <service android:name=".downloadUnity.DownloadService"/>
     </application>
 
 </manifest>

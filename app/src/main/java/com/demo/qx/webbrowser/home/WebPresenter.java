@@ -2,7 +2,8 @@ package com.demo.qx.webbrowser.home;
 
 import android.support.annotation.NonNull;
 
-import com.demo.qx.webbrowser.data.Repository;
+import com.demo.qx.webbrowser.data.Download;
+import com.demo.qx.webbrowser.data.source.Repository;
 import com.demo.qx.webbrowser.data.WebPage;
 
 /**
@@ -46,6 +47,11 @@ public class WebPresenter implements WebContract.Presenter {
     @Override
     public void addHistory(WebPage webPage) {
         mRepository.addHistory(webPage);
+    }
+
+    @Override
+    public void addDownload(Download download) {
+        mRepository.addDownload(download);
     }
 
 }

@@ -19,7 +19,8 @@ public class DownloadActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
-        ab.setTitle("下载");
+        ab.setLogo(R.drawable.ic_file_download_black_24dp);
+        ab.setTitle("");
         ab.setHomeAsUpIndicator(R.drawable.ic_chevron_left_black_24dp);
         ab.setDisplayHomeAsUpEnabled(true);
         DownloadFragment downloadFragment = (DownloadFragment) getSupportFragmentManager()

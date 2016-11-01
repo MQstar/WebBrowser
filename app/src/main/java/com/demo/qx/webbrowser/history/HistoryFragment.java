@@ -84,7 +84,7 @@ public class HistoryFragment extends Fragment implements HistoryContract.View {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.history_fragment_menu, menu);
+        inflater.inflate(R.menu.clear_all_menu, menu);
     }
 
     @Override
@@ -142,7 +142,7 @@ public class HistoryFragment extends Fragment implements HistoryContract.View {
         @Override
         public void onClick(View view) {
             mPopupWindow.dismiss();
-            if (view.getId() == R.id.item_longclicked_deleteHistory) {
+            if (view.getId() == R.id.item_long_click_deleteHistory) {
                 new AlertDialog.Builder(getActivity())
                         .setTitle("删除历史")
                         .setMessage("是否要删除\"" + mWebPage.getTitle() + "\"这个历史？")
@@ -257,7 +257,7 @@ public class HistoryFragment extends Fragment implements HistoryContract.View {
                     //mPopupWindow.setOutsideTouchable(true);
                     //mPopupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_size));
                     mPopupWindow.showAsDropDown(v, v.getWidth() / 2, -v.getHeight() / 2);
-                    mPopupWindow.getView(R.id.item_longclicked_deleteHistory).setOnClickListener(new ItemClickedListener(webPage));
+                    mPopupWindow.getView(R.id.item_long_click_deleteHistory).setOnClickListener(new ItemClickedListener(webPage));
                     return true;
                 }
             });

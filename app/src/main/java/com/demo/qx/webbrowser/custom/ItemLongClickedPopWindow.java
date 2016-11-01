@@ -13,8 +13,9 @@ import com.demo.qx.webbrowser.R;
 public class ItemLongClickedPopWindow extends PopupWindow{
     public static final int BOOKMARKS_POPUPWINDOW = 0;
     public static final int HISTORY_POPUPWINDOW = 1;
-    public static final int SRC_IMAGE_ANCHOR_TYPE_POPUPWINDOW = 2;
+    public static final int DOWNLOAD_POPUPWINDOW = 2;
     public static final int SRC_ANCHOR_TYPE_POPUPWINDOW = 3;
+    public static final int SRC_IMAGE_ANCHOR_TYPE_POPUPWINDOW = 4;
 
     private LayoutInflater itemLongClickedPopWindowInflater;
     private View itemLongClickedPopWindowView;
@@ -53,6 +54,9 @@ public class ItemLongClickedPopWindow extends PopupWindow{
                 break;
             case HISTORY_POPUPWINDOW:
                 this.itemLongClickedPopWindowView = this.itemLongClickedPopWindowInflater.inflate(R.layout.popup_history, null);
+                break;
+            case DOWNLOAD_POPUPWINDOW:
+                this.itemLongClickedPopWindowView = this.itemLongClickedPopWindowInflater.inflate(R.layout.popup_download, null);
                 break;
             case SRC_ANCHOR_TYPE_POPUPWINDOW:
                 this.itemLongClickedPopWindowView = this.itemLongClickedPopWindowInflater.inflate(R.layout.popup_anchor, null);

@@ -2,6 +2,7 @@ package com.demo.qx.webbrowser.home;
 
 import com.demo.qx.webbrowser.BasePresenter;
 import com.demo.qx.webbrowser.BaseView;
+import com.demo.qx.webbrowser.data.Download;
 import com.demo.qx.webbrowser.data.WebPage;
 
 /**
@@ -28,5 +29,7 @@ public interface WebContract {
         void addBookmarks(WebPage webPage);
 
         void addHistory(WebPage webPage);
+
+        void addDownload(Download download);
     }
 }

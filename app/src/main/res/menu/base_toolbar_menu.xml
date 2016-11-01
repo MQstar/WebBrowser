@@ -28,4 +28,8 @@
         android:id="@+id/download"
         android:title="下载"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/exit"
+        android:title="退出"
+        app:showAsAction="never"/>
 </menu>

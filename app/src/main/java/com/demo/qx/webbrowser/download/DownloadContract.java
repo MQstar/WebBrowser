@@ -2,7 +2,7 @@ package com.demo.qx.webbrowser.download;
 
 import com.demo.qx.webbrowser.BasePresenter;
 import com.demo.qx.webbrowser.BaseView;
-import com.demo.qx.webbrowser.data.WebPage;
+import com.demo.qx.webbrowser.data.Download;
 
 import java.util.List;
 
@@ -12,13 +12,26 @@ import java.util.List;
 
 public interface DownloadContract {
     interface View extends BaseView<Presenter> {
-        void showDownload(List<WebPage> webPages);
+        void showDownload(List<Download> downloads);
 
         void showNoDownload();
     }
 
     interface Presenter extends BasePresenter {
 
-        List<WebPage> getDownload();
+
+        void loadDownload(boolean forceUpdate);
+
+        void pause(Download download);
+
+        void resume(Download download);
+
+        void removeDownloadAndFile(Download download);
+
+        void removeDownload(Download download);
+
+        void startAll();
+
+        void pauseAll();
     }
 }

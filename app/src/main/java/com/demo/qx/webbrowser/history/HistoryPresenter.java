@@ -2,8 +2,8 @@ package com.demo.qx.webbrowser.history;
 
 import android.support.annotation.NonNull;
 
-import com.demo.qx.webbrowser.data.DataSource;
-import com.demo.qx.webbrowser.data.Repository;
+import com.demo.qx.webbrowser.data.source.DataSource;
+import com.demo.qx.webbrowser.data.source.Repository;
 import com.demo.qx.webbrowser.data.WebPage;
 
 import java.util.List;

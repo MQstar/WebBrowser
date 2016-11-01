@@ -1,4 +1,4 @@
-package com.demo.qx.webbrowser.data.Local;
+package com.demo.qx.webbrowser.data.source.Local;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -30,6 +30,13 @@ public class DBHelp extends SQLiteOpenHelper {
                     PersistenceContract.History.COLUMN_NAME_ADDRESS + TEXT_TYPE + COMMA_SEP +
                     PersistenceContract.History.COLUMN_NAME_DATE + TEXT_TYPE +
                     " )";
+    private static final String SQL_CREATE_DOWNLOAD =
+            "CREATE TABLE IF NOT EXISTS " + PersistenceContract.Download.TABLE_NAME + " (" +
+                    PersistenceContract.Download._ID + TEXT_TYPE + " PRIMARY KEY," +
+                    PersistenceContract.Download.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
+                    PersistenceContract.Download.COLUMN_NAME_ADDRESS + TEXT_TYPE + COMMA_SEP +
+                    PersistenceContract.Download.COLUMN_NAME_SIZE + TEXT_TYPE +
+                    " )";
 
     public DBHelp(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -39,6 +46,7 @@ public class DBHelp extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_BOOKMARKS);
         db.execSQL(SQL_CREATE_HISTORY);
+        db.execSQL(SQL_CREATE_DOWNLOAD);
     }
 
     @Override

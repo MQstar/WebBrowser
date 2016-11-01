@@ -1,6 +1,5 @@
 package com.demo.qx.webbrowser.home;
 
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.ClipData;
@@ -25,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.DownloadListener;
 import android.webkit.URLUtil;
 import android.webkit.WebView;
 import android.widget.EditText;
@@ -38,6 +38,7 @@ import com.demo.qx.webbrowser.custom.ItemLongClickedPopWindow;
 import com.demo.qx.webbrowser.custom.MyAppWebViewClient;
 import com.demo.qx.webbrowser.custom.MyWebChromeClient;
 import com.demo.qx.webbrowser.custom.MyWebView;
+import com.demo.qx.webbrowser.data.Download;
 import com.demo.qx.webbrowser.data.WebPage;
 
 import java.text.SimpleDateFormat;
@@ -98,6 +99,13 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
         mWebView.setWebViewClient(new MyAppWebViewClient());
         mWebView.setOnLongClickListener(this);
         mWebView.setOnTouchListener(this);
+        mWebView.setDownloadListener(new DownloadListener() {
+            @Override
+            public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
+                mPresenter.addDownload(new Download(url,contentLength));
+                Toast.makeText(getActivity(), "开始下载", Toast.LENGTH_SHORT).show();
+            }
+        });
         if (mTransport!=null)
         {
             mTransport.setWebView(mWebView);
@@ -133,7 +141,6 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
                     {mWebView.goBack();
                     return true;}
                 }
-
                 return false;
             }
         });
@@ -168,16 +175,6 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
             zoomIn();
     }*/
 
-//// FIXME: 16/10/25 back
-   /* public void onBackPressed() {
-        if (isTyping) {
-            hideEdit();
-        } else if (mWebView.canGoBack()) {
-            mWebView.goBack();
-        } else {
-           // super.onBackPressed();
-        }
-    }*/
 @Override
 public boolean onTouch(View v, MotionEvent event) {
    // if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -214,8 +211,6 @@ public boolean onTouch(View v, MotionEvent event) {
                 imm.showSoftInput(mEditText, 0);
                 break;
             case R.id.mult_window_number:
-                //mBitmap=captureWebView(mWebView);
-                //// TODO: 16/10/29 添加截图
                 //zoomOut();
                 ((WebActivity)getActivity()).changeWindow();
                 break;
@@ -232,7 +227,6 @@ public boolean onTouch(View v, MotionEvent event) {
                 mWebView.goBack();
                 return true;
             case R.id.action_new_web:
-                //mBitmap=captureWebView(mWebView);
                 ((WebActivity)getActivity()).getNewWebFragment(null);
                 break;
             case R.id.action_forward:
@@ -251,6 +245,10 @@ public boolean onTouch(View v, MotionEvent event) {
                 break;
             case R.id.download:
                 ((WebActivity)getActivity()).openDownload();
+                break;
+            case R.id.exit:
+                getActivity().finish();
+                System.exit(0);
                 break;
             default:
                 break;
@@ -316,25 +314,6 @@ public boolean onTouch(View v, MotionEvent event) {
         pvhY = PropertyValuesHolder.ofFloat("scaleY", 1f, 0.6f);
         scale = ObjectAnimator.ofPropertyValuesHolder(mWebView, pvhX, pvhY);
         scale.setDuration(50);
-        scale.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
         scale.start();
     }
 
@@ -343,25 +322,6 @@ public boolean onTouch(View v, MotionEvent event) {
         pvhY = PropertyValuesHolder.ofFloat("scaleY", 0.6f, 1f);
         scale = ObjectAnimator.ofPropertyValuesHolder(mWebView, pvhX, pvhY);
         scale.setDuration(50);
-        scale.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
         scale.start();
     }
 
@@ -441,7 +401,6 @@ public boolean onTouch(View v, MotionEvent event) {
                     mWebView.loadUrl(extra);
                     break;
                 case R.id.item_long_click_new_window:
-                    //mBitmap=captureWebView(mWebView);
                     ((WebActivity)getActivity()).getNewWebFragment(extra);
                     break;
                 case R.id.item_long_click_background_window:
@@ -452,7 +411,7 @@ public boolean onTouch(View v, MotionEvent event) {
                     cbm.setPrimaryClip(ClipData.newPlainText("链接",extra));
                     break;
                 case R.id.item_long_click_download:
-                    //// TODO: 16/10/30 download
+                    mPresenter.addDownload(new Download(extra));
                     break;
             }
         }

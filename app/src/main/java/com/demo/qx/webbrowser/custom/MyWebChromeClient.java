@@ -1,8 +1,10 @@
 package com.demo.qx.webbrowser.custom;
 
 import android.os.Message;
+import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import com.demo.qx.webbrowser.data.WebPage;
 import com.demo.qx.webbrowser.home.WebActivity;
@@ -38,6 +40,17 @@ public class MyWebChromeClient extends WebChromeClient {
     @Override
     public void onReceivedTitle(WebView view, String title) {
         mPresenter.setTitle(title);
+    }
+
+    @Override
+    public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+
+
+        Toast.makeText(mWebActivity, message, Toast.LENGTH_SHORT).show();
+
+        result.confirm();
+
+        return true;
     }
 
     public void onProgressChanged(WebView view, int progress) {

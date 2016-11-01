@@ -1,6 +1,5 @@
 package com.demo.qx.webbrowser.bookmarks;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -44,12 +43,5 @@ public class BookmarksActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    void openURL(String url) {
-        Intent intent = getIntent();
-        intent.putExtra("URL", url);
-        setResult(RESULT_OK, intent);
-        finish();
     }
 }

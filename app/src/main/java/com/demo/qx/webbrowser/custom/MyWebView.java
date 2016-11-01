@@ -26,14 +26,15 @@ public class MyWebView extends WebView {
 
     void init() {
         getSettings().setJavaScriptEnabled(true);
+        getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        getSettings().setAppCacheEnabled(true);
+        getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         getSettings().setBuiltInZoomControls(true);
         getSettings().setDomStorageEnabled(true);
         getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         getSettings().setUseWideViewPort(true);
         getSettings().setSupportMultipleWindows(true);
         getSettings().setLoadWithOverviewMode(true);
-        getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        getSettings().setAppCacheEnabled(true);
         getSettings().setDatabaseEnabled(true);
         setLongClickable(true);
         setScrollbarFadingEnabled(true);

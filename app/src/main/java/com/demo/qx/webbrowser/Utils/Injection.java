@@ -19,9 +19,9 @@ package com.demo.qx.webbrowser.utils;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.demo.qx.webbrowser.data.Local.LocalDataSource;
-import com.demo.qx.webbrowser.data.Remote.RemoteDataSource;
-import com.demo.qx.webbrowser.data.Repository;
+import com.demo.qx.webbrowser.data.source.Local.LocalDataSource;
+import com.demo.qx.webbrowser.data.source.Remote.RemoteDataSource;
+import com.demo.qx.webbrowser.data.source.Repository;
 
 public class Injection {
 

@@ -1,6 +1,7 @@
 package com.demo.qx.webbrowser.bookmarks;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,8 @@ import com.demo.qx.webbrowser.data.WebPage;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by qx on 16/10/26.
@@ -65,7 +68,6 @@ public class BookmarksFragment extends Fragment implements BookmarksContract.Vie
     @Override
     public void showBookmarks(List<WebPage> webPages) {
         mListAdapter.replaceData(webPages);
-
         mListView.setVisibility(View.VISIBLE);
         mTextView.setVisibility(View.GONE);
     }
@@ -75,22 +77,6 @@ public class BookmarksFragment extends Fragment implements BookmarksContract.Vie
         mListView.setVisibility(View.GONE);
         mTextView.setVisibility(View.VISIBLE);
     }
-
-  /*  @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(getActivity(), "长按了~~!~!~!", Toast.LENGTH_SHORT).show();
-        View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_bookmarks, null);
-        mPopupWindow = new PopupWindow(contentView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
-        mPopupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_size));
-        mPopupWindow.setOutsideTouchable(true);
-        mPopupWindow.showAsDropDown(view, view.getWidth()/2, -view.getHeight()/2);
-        TextView modify = (TextView)contentView.findViewById(R.id.item_longclicked_modifyBookmarks);
-        TextView delete = (TextView)contentView.findViewById(R.id.item_longclicked_deleteBookmarks);
-        ItemClickedListener itemClickedListener = new ItemClickedListener(view);
-        modify.setOnClickListener(itemClickedListener);
-        delete.setOnClickListener(itemClickedListener);
-        return true;
-    }*/
 
     private class ItemClickedListener implements View.OnClickListener {
         private String title;
@@ -104,8 +90,7 @@ public class BookmarksFragment extends Fragment implements BookmarksContract.Vie
         @Override
         public void onClick(View view) {
             mPopupWindow.dismiss();
-            if(view.getId()==R.id.item_longclicked_modifyBookmarks){
-                //弹出修改窗口
+            if(view.getId()==R.id.item_long_click_modifyBookmarks){
                 LayoutInflater modifyBookmarksInflater = LayoutInflater.from(getActivity());
                 View modifyBookmarksView =modifyBookmarksInflater.inflate(R.layout.dialog_bookmarks,null);
                 final TextView title_input = (TextView)modifyBookmarksView.findViewById(R.id.title_input);
@@ -120,13 +105,13 @@ public class BookmarksFragment extends Fragment implements BookmarksContract.Vie
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if (TextUtils.isEmpty(address_input.getText()))return;
-                                mPresenter.removeBookmarks(address);
                                 mPresenter.addBookmarks(new WebPage(address_input.getText().toString(),title_input.getText().toString()));
+                                mPresenter.removeBookmarks(address);
                             }
                         }).setNegativeButton("取消",null)
                         .create()
                         .show();
-            }else if(view.getId()==R.id.item_longclicked_deleteBookmarks){
+            }else if(view.getId()==R.id.item_long_click_deleteBookmarks){
                 new AlertDialog.Builder(getActivity())
                         .setTitle("删除书签")
                         .setMessage("是否要删除\""+title+"\"这个书签？")
@@ -141,13 +126,10 @@ public class BookmarksFragment extends Fragment implements BookmarksContract.Vie
                         .create()
                         .show();
             }
-
         }
-
     }
 
     private class BookmarksAdapter extends BaseAdapter {
-
         private List<WebPage> mWebPage;
         private ItemListener mItemListener;
 
@@ -187,9 +169,7 @@ public class BookmarksFragment extends Fragment implements BookmarksContract.Vie
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
                 rowView = inflater.inflate(R.layout.item_webpage, viewGroup, false);
             }
-
             final WebPage webPage = getItem(i);
-
             TextView titleTV = (TextView) rowView.findViewById(R.id.title);
             TextView addressTV = (TextView) rowView.findViewById(R.id.address);
             titleTV.setText(webPage.getTitle());
@@ -197,12 +177,11 @@ public class BookmarksFragment extends Fragment implements BookmarksContract.Vie
             rowView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    //View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_bookmarks, null);
                     mPopupWindow = new ItemLongClickedPopWindow(getActivity(), ItemLongClickedPopWindow.BOOKMARKS_POPUPWINDOW,LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                     mPopupWindow.showAsDropDown(v, v.getWidth()/2, -v.getHeight()/2);
                     ItemClickedListener itemClickedListener = new ItemClickedListener(v);
-                    mPopupWindow.getView(R.id.item_longclicked_modifyBookmarks).setOnClickListener(itemClickedListener);
-                    mPopupWindow.getView(R.id.item_longclicked_deleteBookmarks).setOnClickListener(itemClickedListener);
+                    mPopupWindow.getView(R.id.item_long_click_modifyBookmarks).setOnClickListener(itemClickedListener);
+                    mPopupWindow.getView(R.id.item_long_click_deleteBookmarks).setOnClickListener(itemClickedListener);
                     return true;
                 }
             });
@@ -212,22 +191,21 @@ public class BookmarksFragment extends Fragment implements BookmarksContract.Vie
                     mItemListener.onClick(webPage);
                 }
             });
-
             return rowView;
         }
     }
-    //// FIXME: 16/10/28 call back 解耦
+
     ItemListener mItemListener = new ItemListener() {
         @Override
         public void onClick(WebPage clickedWebPage) {
-            ((BookmarksActivity)getActivity()).openURL(clickedWebPage.getUrl());
+            Intent intent = getActivity().getIntent();
+            intent.putExtra("URL", clickedWebPage.getUrl());
+            getActivity().setResult(RESULT_OK, intent);
+            getActivity().finish();
         }
     };
 
         public interface ItemListener {
-
         void onClick(WebPage clickedWebPage);
-
     }
-
 }

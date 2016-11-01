@@ -42,6 +42,7 @@ public class WebActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.drawable.ic_chevron_left_black_24dp);
@@ -71,11 +72,6 @@ public class WebActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // if (isTyping) {
-        //mWebFragment.hideEdit();
-        // } else if (mWebView.canGoBack()) {
-        //     mWebView.goBack();
-        // } else {
         if (mEditText.getVisibility()==View.VISIBLE)
         {
             mWebFragment.hideEdit();
@@ -221,4 +217,39 @@ public class WebActivity extends AppCompatActivity {
         mPresenter = new WebPresenter(Injection.provideTasksRepository(getApplicationContext()), backWebFragment);
         mMultiWindow.setText(MyApp.sWebFragmentList.size()+"");
     }
+
+    public void clearWebViewCache() {
+
+        //清理Webview缓存数据库
+        try {
+            deleteDatabase("webview.db");
+            deleteDatabase("webviewCache.db");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+   /* *//**
+     * 递归删除 文件/文件夹
+     *
+     * @param file
+     *//*
+    public void deleteFile(File file) {
+
+        Log.i(TAG, "delete file path=" + file.getAbsolutePath());
+
+        if (file.exists()) {
+            if (file.isFile()) {
+                file.delete();
+            } else if (file.isDirectory()) {
+                File files[] = file.listFiles();
+                for (int i = 0; i < files.length; i++) {
+                    deleteFile(files[i]);
+                }
+            }
+            file.delete();
+        } else {
+            Log.e(TAG, "delete file no exists " + file.getAbsolutePath());
+        }
+    }*/
 }

@@ -1,8 +1,9 @@
-package com.demo.qx.webbrowser.data.Remote;
+package com.demo.qx.webbrowser.data.source.Remote;
 
 import android.support.annotation.NonNull;
 
-import com.demo.qx.webbrowser.data.DataSource;
+import com.demo.qx.webbrowser.data.Download;
+import com.demo.qx.webbrowser.data.source.DataSource;
 import com.demo.qx.webbrowser.data.WebPage;
 
 /**
@@ -54,14 +55,66 @@ public class RemoteDataSource implements DataSource {
     }
 
     @Override
+    public void addDownload(Download download) {
+
+    }
+
+    @Override
+    public void refreshDownload() {
+
+    }
+
+    @Override
+    public void getDownload(DownloadLoadCallback downloadLoadCallback) {
+
+    }
+
+    @Override
+    public void pause(Download download) {
+
+    }
+
+    @Override
+    public void resume(Download download) {
+
+    }
+
+    @Override
+    public void removeDownloadAndFile(Download download) {
+
+    }
+
+    @Override
+    public void deleteAllDownload() {
+
+    }
+
+    @Override
+    public void removeDownload(Download download) {
+
+    }
+
+    @Override
+    public void startAll() {
+
+    }
+
+    @Override
+    public void pauseAll() {
+
+    }
+
+
+    @Override
     public void addBookmarks(@NonNull WebPage webPage) {
 
     }
 
     @Override
-    public void deleteBookmarks(@NonNull String url) {
+    public void deleteAllBookmarks() {
 
     }
+
 
     @Override
     public void addHistory(@NonNull WebPage webPage) {

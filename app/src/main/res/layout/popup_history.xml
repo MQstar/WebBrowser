@@ -6,7 +6,7 @@
               android:padding="7dp"
     >
     <TextView
-        android:id="@+id/item_longclicked_deleteHistory"
+        android:id="@+id/item_long_click_deleteHistory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -15,4 +15,5 @@
         android:textSize="16sp"
         android:text="删除"
         />
+
 </LinearLayout>
