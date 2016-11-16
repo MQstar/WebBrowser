@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
 import com.demo.qx.webbrowser.data.Download;
 import com.demo.qx.webbrowser.data.WebPage;
 import com.demo.qx.webbrowser.data.source.DataSource;
-import com.demo.qx.webbrowser.downloadUnity.DownloadManager;
+import com.demo.qx.webbrowser.download.downloadUnity.DownloadManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -193,6 +193,16 @@ public class LocalDataSource implements DataSource {
     }
 
     @Override
+    public void pause(@NonNull Download download, DownloadManager downloadManager) {
+
+    }
+
+    @Override
+    public void resume(@NonNull Download download, DownloadManager downloadManager) {
+
+    }
+
+    @Override
     public void removeDownloadAndFile(Download download) {
 
     }
@@ -213,29 +223,15 @@ public class LocalDataSource implements DataSource {
         db.close();
     }
 
-
     @Override
-    public void pause(Download download) {
+    public void startAll(DownloadManager downloadManager) {
 
     }
 
     @Override
-    public void resume(Download download) {
+    public void pauseAll(DownloadManager downloadManager) {
 
     }
-
-
-    @Override
-    public void startAll() {
-
-    }
-
-    @Override
-    public void pauseAll() {
-
-    }
-
-
 
 
     @Override

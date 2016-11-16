@@ -12,10 +12,13 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".WelcomeActivity"
-            android:windowSoftInputMode="stateUnchanged">
+            android:configChanges="keyboardHidden|orientation"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -24,7 +27,7 @@
         <activity android:name=".history.HistoryActivity"/>
         <activity android:name=".download.DownloadActivity"/>
         <activity android:name=".multiwindow.MultiWindow"/>
-        <service android:name=".downloadUnity.DownloadService"/>
+        <service android:name=".download.downloadUnity.DownloadService"/>
     </application>
 
 </manifest>

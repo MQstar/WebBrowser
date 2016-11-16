@@ -16,6 +16,7 @@ public class BookmarksActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookmarks);
+        //寻找并设置Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
@@ -23,22 +24,26 @@ public class BookmarksActivity extends AppCompatActivity {
         ab.setTitle("");
         ab.setHomeAsUpIndicator(R.drawable.ic_chevron_left_black_24dp);
         ab.setDisplayHomeAsUpEnabled(true);
+        //寻找fragment
         BookmarksFragment bookmarksFragment = (BookmarksFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.contentFrame);
         if (bookmarksFragment == null) {
+            //实例化fragment
             bookmarksFragment = BookmarksFragment.newInstance();
+            //将fragment添加到activity
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     bookmarksFragment, R.id.contentFrame);
         }
-
+        //实例化presenter
         new BookmarksPresenter(
                 Injection.provideTasksRepository(getApplicationContext()), bookmarksFragment);
     }
-
+    //toolbar上的菜单的点击事件
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                //回退
                 finish();
                 return true;
         }

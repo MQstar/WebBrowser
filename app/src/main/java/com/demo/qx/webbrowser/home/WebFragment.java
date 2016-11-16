@@ -19,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -40,7 +39,7 @@ import com.demo.qx.webbrowser.custom.MyWebChromeClient;
 import com.demo.qx.webbrowser.custom.MyWebView;
 import com.demo.qx.webbrowser.data.Download;
 import com.demo.qx.webbrowser.data.WebPage;
-import com.demo.qx.webbrowser.downloadUnity.DownloadManager;
+import com.demo.qx.webbrowser.download.downloadUnity.DownloadManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -52,7 +51,7 @@ import static android.content.Context.CLIPBOARD_SERVICE;
  * Created by qx on 16/10/24.
  */
 
-public class WebFragment extends Fragment implements WebContract.View, View.OnClickListener, TextView.OnEditorActionListener, View.OnLongClickListener ,View.OnTouchListener{
+public class WebFragment extends Fragment implements WebContract.View, View.OnClickListener, TextView.OnEditorActionListener, View.OnLongClickListener{
     boolean isLoading;
     WebContract.Presenter mPresenter;
     MyWebView mWebView;
@@ -71,7 +70,6 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
     private WebView.WebViewTransport mTransport;
     public Bitmap mBitmap;
     private long mAId;//唯一标识id
-    private float point_x, point_y; //手指按下的位置
     ItemLongClickedPopWindow mPopWindow;
 
     @Override
@@ -99,7 +97,6 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
         mWebView.setWebChromeClient(new MyWebChromeClient((WebActivity) getActivity(),mPresenter));
         mWebView.setWebViewClient(new MyAppWebViewClient());
         mWebView.setOnLongClickListener(this);
-        mWebView.setOnTouchListener(this);
         mWebView.setDownloadListener(new DownloadListener() {
             @Override
             public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
@@ -175,15 +172,6 @@ public class WebFragment extends Fragment implements WebContract.View, View.OnCl
         if (!hidden)
             zoomIn();
     }*/
-
-@Override
-public boolean onTouch(View v, MotionEvent event) {
-   // if (event.getAction() == MotionEvent.ACTION_DOWN) {
-        point_x = event.getX();
-        point_y = event.getY();
-   // }}
-    return false;
-}
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -363,7 +351,7 @@ public boolean onTouch(View v, MotionEvent event) {
                 break;
             case WebView.HitTestResult.SRC_ANCHOR_TYPE:
                 mPopWindow=new ItemLongClickedPopWindow(getActivity(),ItemLongClickedPopWindow.SRC_ANCHOR_TYPE_POPUPWINDOW, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                mPopWindow.showAtLocation(v, Gravity.TOP | Gravity.LEFT, (int)point_x, (int) point_y);
+                mPopWindow.showAtLocation(v, Gravity.TOP | Gravity.LEFT, (int)((WebActivity)getActivity()).getX(),(int)((WebActivity)getActivity()).getX());
                 itemListener=new ItemLongClickListener(result.getExtra());
                 mPopWindow.getView(R.id.item_long_click_open).setOnClickListener(itemListener);
                 mPopWindow.getView(R.id.item_long_click_new_window).setOnClickListener(itemListener);
@@ -373,7 +361,7 @@ public boolean onTouch(View v, MotionEvent event) {
                 break;
             case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE:
                 mPopWindow = new ItemLongClickedPopWindow(getActivity(), ItemLongClickedPopWindow.SRC_IMAGE_ANCHOR_TYPE_POPUPWINDOW,LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                mPopWindow.showAtLocation(v, Gravity.TOP | Gravity.LEFT, (int)point_x, (int) point_y);
+                mPopWindow.showAtLocation(v, Gravity.TOP | Gravity.LEFT,(int)((WebActivity)getActivity()).getX(),(int)((WebActivity)getActivity()).getY());
                 itemListener=new ItemLongClickListener(result.getExtra());
                 mPopWindow.getView(R.id.item_long_click_open).setOnClickListener(itemListener);
                 mPopWindow.getView(R.id.item_long_click_new_window).setOnClickListener(itemListener);

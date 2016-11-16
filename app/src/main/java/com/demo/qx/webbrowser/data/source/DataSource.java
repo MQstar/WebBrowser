@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.demo.qx.webbrowser.data.Download;
 import com.demo.qx.webbrowser.data.WebPage;
-import com.demo.qx.webbrowser.downloadUnity.DownloadManager;
+import com.demo.qx.webbrowser.download.downloadUnity.DownloadManager;
 
 import java.util.List;
 

@@ -4,7 +4,7 @@ import com.demo.qx.webbrowser.BasePresenter;
 import com.demo.qx.webbrowser.BaseView;
 import com.demo.qx.webbrowser.data.Download;
 import com.demo.qx.webbrowser.data.WebPage;
-import com.demo.qx.webbrowser.downloadUnity.DownloadManager;
+import com.demo.qx.webbrowser.download.downloadUnity.DownloadManager;
 
 /**
  * Created by qx on 16/10/5.

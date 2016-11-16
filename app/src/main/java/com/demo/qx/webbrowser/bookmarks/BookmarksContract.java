@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by qx on 16/10/26.
  */
-
+//这个没必要看.无视之.
 public interface BookmarksContract {
     interface View extends BaseView<Presenter> {
         void showBookmarks(List<WebPage> webPageList);

@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.demo.qx.webbrowser.data.Download;
 import com.demo.qx.webbrowser.data.WebPage;
-import com.demo.qx.webbrowser.downloadUnity.DownloadManager;
+import com.demo.qx.webbrowser.download.downloadUnity.DownloadManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,23 +40,33 @@ public class Repository implements DataSource {
         return INSTANCE;
     }
 
+    /**
+     * 书签的主要来源
+     * @param callback 这个就是关键,就是这货回调,把数据传出去的
+     */
     @Override
     public void getBookmarks(@NonNull  final LoadCallback callback) {
+        //如果缓存中有数据,就直接从缓存中取
         if (mCachedBookmarks != null && !mBookmarksCacheIsDirty) {
             callback.onLoaded(new ArrayList<>(mCachedBookmarks.values()));
             return;
         }
-
+        //如果数据变更过,缓存则失效要从网上取数据
         if (mBookmarksCacheIsDirty) {
             getBookmarksFromRemoteDataSource(callback);
+            //否则就从本地,即数据库中取数据
         } else {
+            //给数据库回调的方法,等数据库找到以后就会执行
             mLocalDataSource.getBookmarks(new LoadCallback() {
+                //加载成功
                 @Override
                 public void onLoaded(List<WebPage> webPages) {
+                    //更新缓存
                     refreshBookmarksCache(webPages);
+                    //回调给上一级(presenter)
                     callback.onLoaded(new ArrayList<>(mCachedBookmarks.values()));
                 }
-
+                //加载失败要回调的方法,让presenter去处理
                 @Override
                 public void onDataNotAvailable() {
                     callback.onDataNotAvailable();
@@ -71,6 +81,7 @@ public class Repository implements DataSource {
         mBookmarksCacheIsDirty = true;
     }
 
+    //添加书签,分别加到缓存,数据库,网上(远端服务器)
     @Override
     public void addBookmarks(WebPage webPage) {
         mRemoteDataSource.addBookmarks(webPage);
@@ -82,7 +93,7 @@ public class Repository implements DataSource {
         mCachedBookmarks.put(webPage.getUrl(), webPage);
     }
 
-
+    //删除全部书签,分别从缓存,数据库,网上(远端服务器)删除
     @Override
     public void deleteAllBookmarks() {
         mLocalDataSource.deleteAllBookmarks();
@@ -93,6 +104,7 @@ public class Repository implements DataSource {
         mCachedBookmarks.clear();
     }
 
+    //删除书签,分别从缓存,数据库,网上(远端服务器)删除
     @Override
     public void removeBookmarks(String address) {
         mRemoteDataSource.removeBookmarks(address);

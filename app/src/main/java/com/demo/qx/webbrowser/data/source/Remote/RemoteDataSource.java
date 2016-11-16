@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.demo.qx.webbrowser.data.Download;
 import com.demo.qx.webbrowser.data.WebPage;
 import com.demo.qx.webbrowser.data.source.DataSource;
-import com.demo.qx.webbrowser.downloadUnity.DownloadManager;
+import com.demo.qx.webbrowser.download.downloadUnity.DownloadManager;
 
 /**
  * Created by qx on 16/10/25.
@@ -71,22 +71,12 @@ public class RemoteDataSource implements DataSource {
     }
 
     @Override
-    public void pause(Download download) {
+    public void pause(@NonNull Download download, DownloadManager downloadManager) {
 
     }
 
     @Override
-    public void resume(Download download) {
-
-    }
-
-    @Override
-    public void startAll() {
-
-    }
-
-    @Override
-    public void pauseAll() {
+    public void resume(@NonNull Download download, DownloadManager downloadManager) {
 
     }
 
@@ -102,6 +92,16 @@ public class RemoteDataSource implements DataSource {
 
     @Override
     public void removeDownload(Download download) {
+
+    }
+
+    @Override
+    public void startAll(DownloadManager downloadManager) {
+
+    }
+
+    @Override
+    public void pauseAll(DownloadManager downloadManager) {
 
     }
 

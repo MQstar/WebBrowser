@@ -3,7 +3,7 @@ package com.demo.qx.webbrowser.download;
 import com.demo.qx.webbrowser.BasePresenter;
 import com.demo.qx.webbrowser.BaseView;
 import com.demo.qx.webbrowser.data.Download;
-import com.demo.qx.webbrowser.downloadUnity.DownloadManager;
+import com.demo.qx.webbrowser.download.downloadUnity.DownloadManager;
 
 import java.util.List;
 

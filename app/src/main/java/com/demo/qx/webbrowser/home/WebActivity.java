@@ -1,6 +1,8 @@
 package com.demo.qx.webbrowser.home;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
@@ -24,9 +26,12 @@ import com.demo.qx.webbrowser.utils.Injection;
 
 import static com.demo.qx.webbrowser.MyApp.RESULT_NO_BACK;
 import static com.demo.qx.webbrowser.MyApp.RESULT_NO_FRAGMENT_REMAIN;
+import static com.demo.qx.webbrowser.MyApp.dir;
+import static com.demo.qx.webbrowser.MyApp.task_number;
+import static com.demo.qx.webbrowser.MyApp.thread_number;
 import static com.demo.qx.webbrowser.utils.ActivityUtils.addFragmentToActivity;
 
-public class WebActivity extends AppCompatActivity {
+public class WebActivity extends AppCompatActivity implements View.OnTouchListener {
     WebFragment mWebFragment;
     private WebPresenter mPresenter;
     final String HOME = "file:///android_asset/www/index1.html";
@@ -38,6 +43,8 @@ public class WebActivity extends AppCompatActivity {
     ActionBar ab;
     private long exitTime = 0;
     private WebActivity mActivity;
+    private static float point_x;
+    private static float point_y;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +64,14 @@ public class WebActivity extends AppCompatActivity {
         mMultiWindow = (TextView) findViewById(R.id.mult_window_number);
         setSupportActionBar(toolbar);
         mActivity = WebActivity.this;
+        View view=findViewById(R.id.web_fragment);
+        view.setOnTouchListener(this);
         intent = getIntent();
+
+        SharedPreferences sharedPreferences=getSharedPreferences("Config", Activity.MODE_PRIVATE);
+        thread_number=sharedPreferences.getInt("thread_number",4);
+        task_number=sharedPreferences.getInt("thread_number",4);
+        dir=sharedPreferences.getString("dir","/storage/emulated/0/WebBrowserDownload");
         //mDisplayMetrics=getResources().getDisplayMetrics();
         //if (savedInstanceState == null)
             processExtraData();
@@ -233,6 +247,19 @@ public class WebActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        point_x = event.getX();
+        point_y = event.getY();
+        return false;
+    }
+
+    public float getX(){
+        return point_x;
+    }
+    public float getY(){
+        return point_y;
+    }
    /* *//**
      * 递归删除 文件/文件夹
      *
